@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todolist - веб-приложение</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container container">
+        <div class="header__title">
+          <h1>Todolist</h1>
+        </div>
+        <ul class="header__theme-styles" data-js-themeStylesList>
+          <li class="header__theme-styles-item" data-js-themeStyle>
+            <label>
+              <input type="radio" name="color" value="" data-js-defaultStyle />
+              <span class="header__theme-styles-item-icon"></span>
+            </label>
+          </li>
+          <li class="header__theme-styles-item" data-js-themeStyle>
+            <label>
+              <input type="radio" name="color" value="" />
+              <span class="header__theme-styles-item-icon"></span>
+            </label>
+          </li>
+          <li class="header__theme-styles-item" data-js-themeStyle>
+            <label>
+              <input type="radio" name="color" value="" />
+              <span class="header__theme-styles-item-icon"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <main>
+      <div class="todo container" data-js-container>
+        <div class="todo__options">
+          <div class="todo__options-date" data-js-todayDate></div>
+          <div class="todo__options-buttons">
+            <button class="todo__options-sort-button button" data-js-sortButton>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-up-wide-narrow-icon lucide-arrow-up-wide-narrow"
+              >
+                <path d="m3 8 4-4 4 4" />
+                <path d="M7 4v16" />
+                <path d="M11 12h10" />
+                <path d="M11 16h7" />
+                <path d="M11 20h4" />
+              </svg>
+            </button>
+
+            <select
+              class="todo__options-select"
+              name="task-status"
+              data-js-priorityFilter
+            >
+              <option value="active">активные</option>
+              <option value="inactive">завершенные</option>
+              <option value="all">все</option>
+            </select>
+          </div>
+        </div>
+        <div class="todo__controls" data-js-inputControls>
+          <input
+            type="text"
+            name="task"
+            id="taskText"
+            class="todo__task-text"
+            placeholder="Введите название задачи"
+            autocomplete="off"
+            data-js-nameInput
+          />
+          <div class="todo__controls-buttons">
+            <button class="todo__add-button button" data-js-addButton>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-plus-icon lucide-plus"
+              >
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+              Добавить задачу
+            </button>
+            <ul class="todo__controls-priority-list" data-js-priorityList>
+              <li class="todo__controls-priority-list-item">
+                <label>
+                  <input
+                    type="radio"
+                    name="priority"
+                    value="3"
+                    data-js-priorityRadio
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-icon lucide-circle"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </label>
+              </li>
+              <li class="todo__controls-priority-list-item">
+                <label>
+                  <input
+                    type="radio"
+                    name="priority"
+                    value="2"
+                    data-js-priorityRadio
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-icon lucide-circle"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </label>
+              </li>
+              <li class="todo__controls-priority-list-item">
+                <label>
+                  <input
+                    type="radio"
+                    name="priority"
+                    value="1"
+                    data-js-priorityRadio
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-icon lucide-circle"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ul class="todo__list" data-js-taskList></ul>
+      </div>
+    </main>
+    <template data-js-customRadio>
+      <label class="todo__list-item-radio" data-js-todoRadio>
+        <input type="radio" />
+        <span class="todo__list-item-radio-icon"></span>
+      </label>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
