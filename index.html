@@ -10,7 +10,7 @@
     <nav class="sidebar" data-js-sidebar>
       <header class="sidebar__header">
         <h1>Todolist</h1>
-        <button class="sidebar__close-button button" data-js-sidebarCloseButton>
+        <button class="sidebar__toggle-button button" data-js-sidebarToggle>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -52,7 +52,7 @@
         <ul class="sidebar__projects-list">
           <li class="sidebar__projects-list-item">IT</li>
           <li class="sidebar__projects-list-item">Математика</li>
-          <li class="sidebar__projects-list-item">Квартра</li>
+          <li class="sidebar__projects-list-item">Квартира</li>
         </ul>
       </div>
     </nav>
@@ -60,26 +60,51 @@
       <section class="todo" id="todo">
         <div class="todo__header">
           <div class="todo__date"><h3>чт, 22 мая</h3></div>
-          <button class="header__sort-button button" data-js-sortTasksButton>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up"
+          <div class="todo__sort">
+            <ul
+              class="todo__sort-select custom-select --hidden"
+              data-js-sortSelect
             >
-              <path d="m3 16 4 4 4-4" />
-              <path d="M7 20V4" />
-              <path d="m21 8-4-4-4 4" />
-              <path d="M17 4v16" />
-            </svg>
-            Сортировка
-          </button>
+              <li
+                class="todo__sort-select-option custom-option"
+                data-value="name"
+              >
+                по названию
+              </li>
+              <li
+                class="todo__sort-select-option custom-option"
+                data-value="date"
+              >
+                по дате
+              </li>
+              <li
+                class="todo__sort-select-option custom-option"
+                data-value="priority"
+              >
+                по приоритету
+              </li>
+            </ul>
+            <button class="header__sort-button button" data-js-sortButton>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up"
+              >
+                <path d="m3 16 4 4 4-4" />
+                <path d="M7 20V4" />
+                <path d="m21 8-4-4-4 4" />
+                <path d="M17 4v16" />
+              </svg>
+              Сортировка
+            </button>
+          </div>
         </div>
         <div class="todo__sections" data-js-todoSections>
           <div class="todo__sections-add-column" data-js-addSectionContainer>
@@ -109,18 +134,11 @@
             </button>
           </div>
         </div>
-        <template data-js-customTaskRadio>
-          <label data-js-todoLabel>
-            <input type="radio" class="taskRadio" data-js-todoRadio />
-            <span class="todo__list-item-radio"></span>
-          </label>
-        </template>
-
         <template data-js-section>
           <div class="todo__sections-column-title">
             <div
               class="todo__sections-column-title-text input-wrapper"
-              data-js-sectionInputContainer
+              data-js-sectionTitleContainer
             >
               <input
                 type="text"
@@ -128,16 +146,16 @@
                 maxlength="24"
                 data-js-sectionTitleInput
               />
-              <h4 data-js-sectionTitleContainer></h4>
+              <h4 class="--hidden" data-js-sectionTitleText></h4>
             </div>
 
             <div
-              class="todo__sections-column-title-buttons --hidden"
+              class="todo__sections-column-title-buttons"
               data-js-sectionTitleButtonContainer
             >
               <button
                 class="todo__sections-column-title-buttons-save-button save-button button"
-                data-js-saveTitleButton
+                data-js-submitSectionButton
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +174,7 @@
               </button>
               <button
                 class="todo__sections-column-title-buttons-cancel-button cancel-button button"
-                data-js-cancelTitleButton
+                data-js-cancelSectionButton
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -178,110 +196,7 @@
           </div>
 
           <ul class="todo__list" data-js-todoList></ul>
-          <div class="todo__list-input-field --hidden" data-js-taskInputField>
-            <input
-              type="text"
-              name=""
-              id=""
-              data-js-taskInput
-              placeholder="Название задачи"
-            />
 
-            <ul class="todo__list-priority-list">
-              <li class="todo__list-priority-list-item">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
-                >
-                  <path d="M7 22V2l10 5-10 5" />
-                </svg>
-              </li>
-              <li class="todo__list-priority-list-item">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
-                >
-                  <path d="M7 22V2l10 5-10 5" />
-                </svg>
-              </li>
-              <li class="todo__list-priority-list-item">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
-                >
-                  <path d="M7 22V2l10 5-10 5" />
-                </svg>
-              </li>
-            </ul>
-            <div class="todo__list-input-field-buttons">
-              <button
-                class="todo__list-input-field-buttons-save-button save-button button"
-                data-js-saveButton
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-send-horizontal-icon lucide-send-horizontal"
-                >
-                  <path
-                    d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"
-                  />
-                  <path d="M6 12h16" />
-                </svg>
-              </button>
-              <button
-                class="todo__list-input-field-buttons-cancel-button cancel-button button"
-                data-js-cancelButton
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-x-icon lucide-x"
-                >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
           <button
             class="todo__list-add-button button --hidden"
             data-js-showTaskInputButton
@@ -306,8 +221,184 @@
             Добавить задачу
           </button>
         </template>
+        <template data-js-taskInputTemplate>
+          <input
+            type="text"
+            name=""
+            id=""
+            data-js-taskInput
+            maxlength="24"
+            placeholder="Название задачи"
+          />
+          <div class="todo__list-priority">
+            <ul
+              class="todo__list-priority-list custom-select --hidden"
+              data-js-priorityList
+            >
+              <li class="todo__list-priority-list-item">
+                <label class="custom-option">
+                  <input type="radio" name="priority" value="3" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
+                  >
+                    <path d="M7 22V2l10 5-10 5" />
+                  </svg>
+                  Приоритет 3
+                </label>
+              </li>
+              <li class="todo__list-priority-list-item">
+                <label class="custom-option">
+                  <input type="radio" name="priority" value="2" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
+                  >
+                    <path d="M7 22V2l10 5-10 5" />
+                  </svg>
+                  Приоритет 2
+                </label>
+              </li>
+              <li class="todo__list-priority-list-item">
+                <label class="custom-option">
+                  <input type="radio" name="priority" value="1" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
+                  >
+                    <path d="M7 22V2l10 5-10 5" />
+                  </svg>
+                  Приоритет 1
+                </label>
+              </li>
+            </ul>
+            <button
+              class="todo__list-priority-button button"
+              data-js-priorityButton
+              priority=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-flag-triangle-right-icon lucide-flag-triangle-right"
+              >
+                <path d="M7 22V2l10 5-10 5" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="todo__list-input-field-buttons edit-buttons">
+            <button
+              class="todo__list-input-field-buttons-save-button save-button button"
+              data-js-submitTaskButton
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-send-horizontal-icon lucide-send-horizontal"
+              >
+                <path
+                  d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"
+                />
+                <path d="M6 12h16" />
+              </svg>
+            </button>
+            <button
+              class="todo__list-input-field-buttons-cancel-button cancel-button button"
+              data-js-cancelTaskButton
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x-icon lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </div>
+        </template>
+        <template data-js-todoListItem>
+          <li class="todo__list-item">
+            <label>
+              <input type="checkbox" data-js-todoRadio />
+              <span class="todo__list-item-radio"></span>
+            </label>
+            <div class="todo__list-item-text-container">
+              <span
+                class="todo__list-item-text"
+                data-js-taskTextContainer
+              ></span>
+            </div>
+            <button
+              class="todo__list-item-delete-button cancel-button"
+              data-js-deleteTaskButton
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x-icon lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </li>
+        </template>
       </section>
     </main>
-    <script src="Todo.js" type="module"></script>
+    <script src="main.js" type="module"></script>
   </body>
 </html>

@@ -1,0 +1,186 @@
+import Section from "../models/Section.js";
+import SectionView from "../views/SectionView.js";
+import TaskView from "../views/TaskView.js";
+import TaskInputView from "../views/TaskInputView.js";
+import { $ } from "../utils/dom.js";
+
+export default class TodoController {
+  constructor() {
+    this.sections = [];
+    this.taskViews = new Map();
+    this.sectionViews = new Map();
+
+    this.selectors = {
+      container: $("[data-js-todoSections]"),
+      addSectionContainer: $("[data-js-addSectionContainer]"),
+      sectionTemplate: $("[data-js-section]"),
+      taskTemplate: $("[data-js-todoListItem]"),
+      taskInputTemplate: $("[data-js-taskInputTemplate]"),
+    };
+  }
+
+  addSection(title = "") {
+    if (this.hasUnfinishedSection()) return;
+    const section = new Section(title);
+    this.sections.push(section);
+
+    const sectionView = new SectionView(
+      section,
+      this.selectors.sectionTemplate
+    );
+    sectionView.isEditing = true;
+    this.sectionViews.set(section.id, sectionView);
+    this.selectors.container.appendChild(sectionView.el);
+    this.selectors.container.insertBefore(
+      sectionView.el,
+      this.selectors.addSectionContainer
+    );
+    sectionView.selectors.input.focus();
+
+    sectionView.onSubmit(section);
+    sectionView.onCancel(this, section);
+    sectionView.onEdit();
+    sectionView.onShowTaskInput(this, section);
+    sectionView.onSortTasks((sectionId, criterion) =>
+      this.sortTasks(sectionId, criterion)
+    );
+  }
+
+  hasUnfinishedSection() {
+    return Array.from(this.sectionViews.values()).some(
+      (view) => view.isEditing
+    );
+  }
+
+  renderTask(task, sectionId, priority) {
+    const sectionView = this.sectionViews.get(sectionId);
+
+    if (!sectionView) return;
+
+    const taskView = new TaskView(task, this.selectors.taskTemplate);
+
+    this.taskViews.set(task.id, taskView);
+    taskView.el.setAttribute("priority", priority);
+
+    sectionView.addTaskView(taskView);
+
+    taskView.show();
+
+    taskView.onEditText((taskId) => {
+      this.showTaskEditingInput(sectionId, taskId);
+    });
+
+    taskView.onCompleteTask(() => {
+      setTimeout(() => {
+        this.sortTasks(sectionId, "status");
+      }, 1000);
+    });
+
+    taskView.onDelete((taskId) => this.removeTask(taskId, sectionId));
+  }
+
+  showTaskInput(sectionId) {
+    const sectionView = this.sectionViews.get(sectionId);
+
+    if (!sectionView || sectionView.isEditing || sectionView.taskInputView)
+      return;
+
+    const taskInputField = new TaskInputView(this.selectors.taskInputTemplate);
+
+    taskInputField.appendTo(sectionView.el);
+    taskInputField.focus();
+
+    sectionView.setTaskInputView(taskInputField);
+
+    let priority = "3";
+
+    taskInputField.onSelectPriority((value) => {
+      priority = value;
+    });
+
+    taskInputField.onSubmit((text) => {
+      const section = this.sections.find((s) => s.id === sectionId);
+      if (!section) return;
+
+      const task = section.addTask(text, priority);
+      this.renderTask(task, sectionId, priority, taskInputField);
+      sectionView.clearTaskInputView();
+    });
+
+    taskInputField.onCancel(() => {
+      sectionView.clearTaskInputView();
+    });
+  }
+
+  showTaskEditingInput(sectionId, taskId) {
+    const task = this.sections
+      .find((s) => s.id === sectionId)
+      ?.tasks.find((t) => t.id === taskId);
+
+    if (!task) return;
+
+    const taskView = this.taskViews.get(taskId);
+    const sectionView = this.sectionViews.get(sectionId);
+
+    if (!sectionView || sectionView.isEditing || sectionView.taskInputView)
+      return;
+
+    const taskInputField = new TaskInputView(this.selectors.taskInputTemplate);
+
+    sectionView.setTaskInputView(taskInputField);
+
+    taskView.el.after(taskInputField.el);
+    taskInputField.focus();
+
+    taskInputField.input.value = task.text;
+    taskInputField.priorityButton.setAttribute("priority", task.priority);
+
+    let priority = task.priority;
+
+    taskInputField.onSelectPriority((value) => {
+      priority = value;
+    });
+
+    taskInputField.onSubmit((text) => {
+      task.text = text;
+      task.priority = priority;
+
+      taskView.update(text, priority);
+      sectionView.clearTaskInputView();
+    });
+
+    taskInputField.onCancel(() => {
+      sectionView.clearTaskInputView();
+    });
+  }
+
+  removeTask(taskId, sectionId) {
+    const section = this.sections.find((s) => s.id === sectionId);
+    if (!section) return;
+
+    section.tasks = section.tasks.filter((t) => t.id !== taskId);
+
+    const view = this.taskViews.get(taskId);
+    if (view) {
+      view.remove();
+      this.taskViews.delete(taskId);
+    }
+  }
+
+  sortTasks(sectionId, criterion) {
+    const section = this.sections.find((s) => s.id === sectionId);
+    const sectionView = this.sectionViews.get(sectionId);
+    if (!section || !sectionView) return;
+
+    const sortedTasks = section.getSortedTasks(criterion);
+    const taskListEl = sectionView.selectors.taskList;
+
+    sortedTasks.forEach((task) => {
+      const view = this.taskViews.get(task.id);
+      if (view) {
+        taskListEl.appendChild(view.el);
+        view.slide();
+      }
+    });
+  }
+}
