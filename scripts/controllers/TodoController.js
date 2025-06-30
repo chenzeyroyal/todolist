@@ -20,8 +20,23 @@ export default class TodoController {
       maxSectionsModal: $("[data-js-maxSectionsModal]"),
       maxTasksModal: $("[data-js-maxTasksModal]"),
     };
+
+    this.getDate();
   }
 
+  getDate() {
+    const today = new Date();
+
+    const formatter = new Intl.DateTimeFormat("ru-RU", {
+      weekday: "short", // "чт"
+      day: "numeric", // "12"
+      month: "long", // "июня"
+    });
+
+    const formatted = formatter.format(today);
+
+    this.selectors.date.textContent = formatted;
+  }
   addSection(title = "") {
     if (this.hasUnfinishedSection()) return;
 

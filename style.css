@@ -117,12 +117,12 @@ button {
   --transition-duration-02: 0.3s;
 
   /* ICONS */
-  --icon-width: 1.25rem;
-  --icon-height: 1.25rem;
+  --icon-width: 1.5rem;
+  --icon-height: 1.5rem;
 
   /* SIZES */
 
-  --sidebar-width: 18.75rem;
+  --sidebar-width: 200px;
   --radio-width: 1.25rem;
 }
 
@@ -192,6 +192,7 @@ button {
     width var(--transition-duration-02) ease-in-out;
   display: flex;
   flex-direction: column;
+  gap: var(--gap-02);
   overflow: hidden;
 }
 .sidebar__header {
@@ -199,20 +200,37 @@ button {
   align-items: center;
   justify-content: space-between;
 }
-.sidebar__toggle-button {
-  transition: background var(--transition-duration) ease-in-out,
-    var(--transition-duration-02) ease-in-out;
-}
+
 .sidebar__add-button {
   margin: 1rem 0;
 }
+.sidebar__links .icon-wrapper {
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  color: var(--color-dark-02);
+  padding: var(--padding);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-duration);
+}
+.sidebar__links .icon-wrapper:hover {
+  background-color: var(--color-dark-03);
+}
+
 .sidebar__links-list-item a {
   display: flex;
   align-items: center;
-  gap: var(--gap);
+  gap: var(--padding-02);
+}
+.sidebar__links-list-item a:hover {
+  text-decoration: underline;
 }
 .sidebar__links-list-item svg {
   flex-shrink: 0;
+  width: var(--icon-width);
+  height: var(--icon-height);
+  stroke: var(--color-dark-02);
 }
 .todo {
   display: flex;
@@ -496,15 +514,12 @@ input[type="text"] {
 
 /* Sidebar */
 .sidebar.--open {
-  /* transform: translateX(-100%); */
-  width: calc(var(--icon-width) + var(--padding-02) + var(--gap) * 2 - 1px);
+  width: calc(var(--icon-width) + var(--padding) * 2 + var(--padding-02) * 2);
 }
 .sidebar.--open + .main {
   padding-left: calc(var(--sidebar-width) / 2);
 }
-.sidebar.--open .sidebar__toggle-button {
-  transform: translateX(160%);
-}
+
 /* Task */
 .todo__list-item.--show {
   opacity: 1;
@@ -539,13 +554,6 @@ input[type="text"] {
 
 /* MEDIA QUERIES */
 @media (max-width: 1100px) {
-  .sidebar {
-    display: none;
-  }
-  .main {
-    padding-left: 2rem;
-    overflow-x: auto;
-  }
   .todo__sections {
     gap: 3rem;
   }
