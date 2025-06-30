@@ -15,12 +15,12 @@ export function toggleVisibility(element, isVisible) {
   element.classList.toggle(hideClass, !isVisible);
 }
 
-export function addVisibility(element, isVisible) {
-  element.classList.add(hideClass, !isVisible);
+export function addVisibility(element) {
+  element.classList.add(hideClass);
 }
 
-export function removeVisibility(element, isVisible) {
-  element.classList.remove(hideClass, !isVisible);
+export function removeVisibility(element) {
+  element.classList.remove(hideClass);
 }
 
 export function slide(element) {
@@ -30,4 +30,15 @@ export function slide(element) {
 
 export function show(element) {
   setTimeout(() => element.classList.add(showClass));
+}
+
+export function unShow(element) {
+  setTimeout(() => element.classList.remove(showClass));
+}
+
+export function displayModal(modal) {
+  modal.classList.add(showClass);
+  setTimeout(() => {
+    modal.classList.remove(showClass);
+  }, 3000);
 }

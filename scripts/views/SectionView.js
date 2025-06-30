@@ -9,9 +9,10 @@ export default class SectionView {
   constructor(section, templateSelector) {
     this.el = this.renderSection(section, templateSelector);
     this.isEditing = false;
-
+    this.currentSort = "date";
     this.taskInputView = null;
     this.section = section;
+
     this.selectors = {
       titleContainer: this.el.querySelector("[data-js-sectionTitleContainer]"),
       title: this.el.querySelector("[data-js-sectionTitleText]"),
@@ -19,9 +20,7 @@ export default class SectionView {
       buttonContainer: this.el.querySelector(
         "[data-js-sectionTitleButtonContainer]"
       ),
-      submitSectionButton: this.el.querySelector(
-        "[data-js-submitSectionButton]"
-      ),
+      submitButton: this.el.querySelector("[data-js-submitSectionButton]"),
       cancelSectionButton: this.el.querySelector(
         "[data-js-cancelSectionButton]"
       ),
@@ -33,6 +32,12 @@ export default class SectionView {
       taskList: this.el.querySelector("[data-js-todoList]"),
       sortSelect: document.querySelector("[data-js-sortSelect]"),
     };
+
+    this.classes = {
+      inactiveButton: "--inactive",
+    };
+
+    this.checkInput();
   }
 
   renderSection(section, templateSelector) {
@@ -47,7 +52,7 @@ export default class SectionView {
   }
 
   onSubmit(section) {
-    this.selectors.submitSectionButton.addEventListener("click", () => {
+    this.selectors.submitButton.addEventListener("click", () => {
       if (this.selectors.input.value.trim() === "") return;
       section.title = this.saveTitle();
       this.isEditing = false;
@@ -59,7 +64,6 @@ export default class SectionView {
       if (this.selectors.input.value.trim() === "") return;
       section.title = this.saveTitle();
       this.isEditing = false;
-      console.log(section);
     });
   }
 
@@ -105,11 +109,33 @@ export default class SectionView {
     if (!sortSelect) return;
 
     sortSelect.addEventListener("click", (e) => {
-      const value = e.target.dataset.value;
+      if (e.target.tagName !== "INPUT") return;
+
+      const input = e.target.closest("input");
+      const value = input.value;
       if (value) {
+        this.currentSort = input.value;
         callback(this.section.id, value);
       }
     });
+  }
+
+  checkInput() {
+    this.selectors.input.addEventListener("input", () => {
+      if (this.selectors.input.value.trim("") === "") {
+        this.setSubmitToInactive();
+      } else {
+        this.setSubmitToActive();
+      }
+    });
+  }
+
+  setSubmitToActive() {
+    this.selectors.submitButton.classList.remove(this.classes.inactiveButton);
+  }
+
+  setSubmitToInactive() {
+    this.selectors.submitButton.classList.add(this.classes.inactiveButton);
   }
 
   saveTitle() {

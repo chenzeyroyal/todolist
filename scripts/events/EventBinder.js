@@ -1,4 +1,4 @@
-import { $, toggleVisibility } from "../utils/dom.js";
+import { $, addVisibility, toggleVisibility } from "../utils/dom.js";
 
 export default class EventBinder {
   constructor(controller) {
@@ -23,8 +23,12 @@ export default class EventBinder {
       this.controller.addSection();
     });
 
-    this.sortButton.addEventListener("click", () => {
-      this.sortSelect.classList.toggle("--hidden");
+    document.addEventListener("click", (e) => {
+      if (this.sortButton.contains(e.target)) {
+        this.sortSelect.classList.toggle("--hidden");
+      } else {
+        addVisibility(this.sortSelect);
+      }
     });
   }
 }

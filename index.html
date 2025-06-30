@@ -27,61 +27,126 @@
           </svg>
         </button>
       </header>
-      <button class="sidebar__add-button button">
-        <div class="icon-wrapper">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon"
-          >
-            <path d="M5 12h14" />
-            <path d="M12 5v14" />
-          </svg>
-        </div>
-        Добавить задачу
-      </button>
-      <div class="sidebar__projects">
-        <h2>Мои проекты</h2>
-        <ul class="sidebar__projects-list">
-          <li class="sidebar__projects-list-item">IT</li>
-          <li class="sidebar__projects-list-item">Математика</li>
-          <li class="sidebar__projects-list-item">Квартира</li>
+      <div class="sidebar__links">
+        <h4>Контакты</h4>
+        <ul class="sidebar__links-list">
+          <li class="sidebar__links-list-item">
+            <a href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-mail-icon lucide-mail"
+              >
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+              </svg>
+              <span>Сайт</span>
+            </a>
+          </li>
+          <li class="sidebar__links-list-item">
+            <a href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-mail-icon lucide-mail"
+              >
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+              </svg>
+              <span>Сайт</span>
+            </a>
+          </li>
+          <li class="sidebar__links-list-item">
+            <a href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-mail-icon lucide-mail"
+              >
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+              </svg>
+              <span>Сайт</span>
+            </a>
+          </li>
+          <li class="sidebar__links-list-item">
+            <a href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-mail-icon lucide-mail"
+              >
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+              </svg>
+              <span>Сайт</span>
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
     <main class="main" data-js-main>
       <section class="todo" id="todo">
+        <div class="modal" data-js-maxSectionsModal>
+          Достигнуто максимальное количество секций!
+        </div>
+        <div class="modal" data-js-maxTasksModal>
+          Достигнуто максимальное количество секций!
+        </div>
         <div class="todo__header">
-          <div class="todo__date"><h3>чт, 22 мая</h3></div>
+          <div class="todo__date" data-js-date>
+            <h3>СДЕЛАТЬ ДАТУ</h3>
+          </div>
           <div class="todo__sort">
             <ul
               class="todo__sort-select custom-select --hidden"
               data-js-sortSelect
             >
-              <li
-                class="todo__sort-select-option custom-option"
-                data-value="name"
-              >
-                по названию
+              <li class="todo__sort-select-option">
+                <label class="custom-option">
+                  <input type="radio" name="sort" value="name" />
+                  по названию
+                </label>
               </li>
-              <li
-                class="todo__sort-select-option custom-option"
-                data-value="date"
-              >
-                по дате
+              <li class="todo__sort-select-option">
+                <label class="custom-option">
+                  <input type="radio" name="sort" value="date" />
+                  по дате
+                </label>
               </li>
-              <li
-                class="todo__sort-select-option custom-option"
-                data-value="priority"
-              >
-                по приоритету
+              <li class="todo__sort-select-option">
+                <label class="custom-option">
+                  <input type="radio" name="sort" value="priority" />
+                  по приоритету
+                </label>
               </li>
             </ul>
             <button class="header__sort-button button" data-js-sortButton>
@@ -154,7 +219,7 @@
               data-js-sectionTitleButtonContainer
             >
               <button
-                class="todo__sections-column-title-buttons-save-button save-button button"
+                class="todo__sections-column-title-buttons-save-button save-button button --inactive"
                 data-js-submitSectionButton
               >
                 <svg
@@ -227,7 +292,6 @@
             name=""
             id=""
             data-js-taskInput
-            maxlength="24"
             placeholder="Название задачи"
           />
           <div class="todo__list-priority">
@@ -320,7 +384,7 @@
 
           <div class="todo__list-input-field-buttons edit-buttons">
             <button
-              class="todo__list-input-field-buttons-save-button save-button button"
+              class="todo__list-input-field-buttons-save-button save-button button --inactive"
               data-js-submitTaskButton
             >
               <svg
@@ -369,12 +433,7 @@
               <input type="checkbox" data-js-todoRadio />
               <span class="todo__list-item-radio"></span>
             </label>
-            <div class="todo__list-item-text-container">
-              <span
-                class="todo__list-item-text"
-                data-js-taskTextContainer
-              ></span>
-            </div>
+            <span class="todo__list-item-text" data-js-taskTextContainer></span>
             <button
               class="todo__list-item-delete-button cancel-button"
               data-js-deleteTaskButton

@@ -1,4 +1,9 @@
-import { createElementFromTemplate, slide, show } from "../utils/dom.js";
+import {
+  createElementFromTemplate,
+  slide,
+  show,
+  unShow,
+} from "../utils/dom.js";
 export default class TaskView {
   constructor(task, templateSelector) {
     this.el = this.renderTask(task, templateSelector);
@@ -32,19 +37,19 @@ export default class TaskView {
     });
   }
 
-  show() {
-    show(this.el);
-  }
-
-  slide() {
-    slide(this.el);
-  }
-
-  onEditText(callback) {
+  onEdit(callback) {
     this.el.addEventListener("click", (e) => {
-      if (e.target.closest("label")) return;
+      if (e.target.closest("label") || e.target.closest("button")) return;
       callback(this.el.dataset.id);
     });
+  }
+
+  onDelete(callback) {
+    if (this.deleteButton) {
+      this.deleteButton.addEventListener("click", () => {
+        callback?.(this.el.dataset.id);
+      });
+    }
   }
 
   update(text, priority) {
@@ -53,14 +58,17 @@ export default class TaskView {
     this.text.textContent = text;
     this.el.setAttribute("priority", priority);
   }
-  remove() {
-    this.el.remove();
+
+  show() {
+    show(this.el);
   }
-  onDelete(callback) {
-    if (this.deleteButton) {
-      this.deleteButton.addEventListener("click", () => {
-        callback?.(this.el.dataset.id);
-      });
-    }
+
+  slide() {
+    slide(this.el);
+  }
+
+  remove() {
+    unShow(this.el);
+    setTimeout(() => this.el.remove(), 200);
   }
 }

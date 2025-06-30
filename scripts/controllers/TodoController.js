@@ -2,7 +2,7 @@ import Section from "../models/Section.js";
 import SectionView from "../views/SectionView.js";
 import TaskView from "../views/TaskView.js";
 import TaskInputView from "../views/TaskInputView.js";
-import { $ } from "../utils/dom.js";
+import { $, displayModal } from "../utils/dom.js";
 
 export default class TodoController {
   constructor() {
@@ -16,11 +16,20 @@ export default class TodoController {
       sectionTemplate: $("[data-js-section]"),
       taskTemplate: $("[data-js-todoListItem]"),
       taskInputTemplate: $("[data-js-taskInputTemplate]"),
+      date: $("[data-js-date]"),
+      maxSectionsModal: $("[data-js-maxSectionsModal]"),
+      maxTasksModal: $("[data-js-maxTasksModal]"),
     };
   }
 
   addSection(title = "") {
     if (this.hasUnfinishedSection()) return;
+
+    if (this.sectionViews.size === 5) {
+      displayModal(this.selectors.maxSectionsModal);
+      return;
+    }
+
     const section = new Section(title);
     this.sections.push(section);
 
@@ -66,31 +75,40 @@ export default class TodoController {
 
     taskView.show();
 
-    taskView.onEditText((taskId) => {
+    taskView.onEdit((taskId) => {
       this.showTaskEditingInput(sectionId, taskId);
+      sectionView.taskInputView?.setSubmitToActive();
     });
 
     taskView.onCompleteTask(() => {
       setTimeout(() => {
+        sectionView.clearTaskInputView();
         this.sortTasks(sectionId, "status");
       }, 1000);
     });
 
-    taskView.onDelete((taskId) => this.removeTask(taskId, sectionId));
+    taskView.onDelete((taskId) => {
+      sectionView.clearTaskInputView();
+      this.removeTask(taskId, sectionId);
+    });
   }
 
   showTaskInput(sectionId) {
     const sectionView = this.sectionViews.get(sectionId);
 
-    if (!sectionView || sectionView.isEditing || sectionView.taskInputView)
+    if (this.taskViews.size === 15) {
+      displayModal(this.selectors.maxTasksModal);
+
       return;
+    }
+
+    if (!sectionView || sectionView.isEditing) return;
 
     const taskInputField = new TaskInputView(this.selectors.taskInputTemplate);
 
+    sectionView.setTaskInputView(taskInputField);
     taskInputField.appendTo(sectionView.el);
     taskInputField.focus();
-
-    sectionView.setTaskInputView(taskInputField);
 
     let priority = "3";
 
@@ -105,6 +123,7 @@ export default class TodoController {
       const task = section.addTask(text, priority);
       this.renderTask(task, sectionId, priority, taskInputField);
       sectionView.clearTaskInputView();
+      this.sortTasks(sectionId, sectionView.currentSort);
     });
 
     taskInputField.onCancel(() => {
@@ -113,9 +132,8 @@ export default class TodoController {
   }
 
   showTaskEditingInput(sectionId, taskId) {
-    const task = this.sections
-      .find((s) => s.id === sectionId)
-      ?.tasks.find((t) => t.id === taskId);
+    const section = this.sections.find((s) => s.id === sectionId);
+    const task = section?.tasks.find((t) => t.id === taskId);
 
     if (!task) return;
 
@@ -164,6 +182,7 @@ export default class TodoController {
     if (view) {
       view.remove();
       this.taskViews.delete(taskId);
+      this.sortTasks(section.priority);
     }
   }
 

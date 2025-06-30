@@ -17,6 +17,11 @@ export default class TaskInputView {
     document.addEventListener("click", (e) => {
       if (e.target.closest("[data-js-sectiontitlecontainer]")) this.remove();
     });
+
+    this.classes = {
+      inactiveButton: "--inactive",
+    };
+    this.checkInput();
   }
 
   renderTaskInputField(templateSelector) {
@@ -36,6 +41,7 @@ export default class TaskInputView {
 
       const value = this.input.value.trim();
       if (!value) return;
+
       callback(value);
 
       this.clear();
@@ -47,34 +53,26 @@ export default class TaskInputView {
 
       const value = this.input.value.trim();
       if (!value) return;
-      callback(value);
-      this.clear();
-    });
-  }
-  onSubmitEdit(callback) {
-    this.submitButton?.addEventListener("click", () => {
-      const value = this.input.value.trim();
-      if (!value) return;
-      callback(value);
-    });
 
-    this.input?.addEventListener("keydown", (e) => {
-      const value = this.input.value.trim();
-      if (!value) return;
       callback(value);
+
+      this.clear();
     });
   }
 
   onCancel(callback) {
     this.cancelButton?.addEventListener("click", () => {
-      this.clear();
       callback?.();
+
+      this.clear();
     });
 
     this.input?.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      this.clear();
+
       callback?.();
+
+      this.clear();
     });
   }
 
@@ -95,6 +93,24 @@ export default class TaskInputView {
 
       callback(input.value);
     });
+  }
+
+  checkInput() {
+    this.input.addEventListener("input", () => {
+      if (this.input.value.trim("") === "") {
+        this.setSubmitToInactive();
+      } else {
+        this.setSubmitToActive();
+      }
+    });
+  }
+
+  setSubmitToActive() {
+    this.submitButton.classList.remove(this.classes.inactiveButton);
+  }
+
+  setSubmitToInactive() {
+    this.submitButton.classList.add(this.classes.inactiveButton);
   }
 
   clear() {
