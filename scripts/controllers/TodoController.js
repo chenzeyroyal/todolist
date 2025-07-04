@@ -37,10 +37,17 @@ export default class TodoController {
 
     this.selectors.date.textContent = formatted;
   }
+
   addSection(title = "") {
+    this.sectionViews.forEach((view) => {
+      if (view.taskInputView?.isActive) {
+        view.clearTaskInputView();
+      }
+    });
+
     if (this.hasUnfinishedSection()) return;
 
-    if (this.sectionViews.size === 5) {
+    if (this.sectionViews.size === 6) {
       displayModal(this.selectors.maxSectionsModal);
       return;
     }
@@ -116,10 +123,11 @@ export default class TodoController {
 
       return;
     }
-
+    this.closeAllInputs();
     if (!sectionView || sectionView.isEditing) return;
 
     const taskInputField = new TaskInputView(this.selectors.taskInputTemplate);
+    taskInputField.isActive = true;
 
     sectionView.setTaskInputView(taskInputField);
     taskInputField.appendTo(sectionView.el);
@@ -153,12 +161,14 @@ export default class TodoController {
     if (!task) return;
 
     const taskView = this.taskViews.get(taskId);
+
     const sectionView = this.sectionViews.get(sectionId);
 
     if (!sectionView || sectionView.isEditing || sectionView.taskInputView)
       return;
 
     const taskInputField = new TaskInputView(this.selectors.taskInputTemplate);
+    taskInputField.isActive = true;
 
     sectionView.setTaskInputView(taskInputField);
 
@@ -197,7 +207,11 @@ export default class TodoController {
     if (view) {
       view.remove();
       this.taskViews.delete(taskId);
-      this.sortTasks(section.priority);
+
+      const sectionView = this.sectionViews.get(sectionId);
+      if (sectionView) {
+        this.sortTasks(sectionId, sectionView.currentSort);
+      }
     }
   }
 
@@ -214,6 +228,18 @@ export default class TodoController {
       if (view) {
         taskListEl.appendChild(view.el);
         view.slide();
+      }
+    });
+  }
+
+  closeAllInputs() {
+    this.sectionViews.forEach((view) => {
+      if (view.taskInputView?.isActive) {
+        view.clearTaskInputView();
+      }
+
+      if (view.isEditing) {
+        view.cancelEditing();
       }
     });
   }

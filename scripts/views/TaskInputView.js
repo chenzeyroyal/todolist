@@ -8,6 +8,7 @@ export default class TaskInputView {
   constructor(templateSelector) {
     this.el = this.renderTaskInputField(templateSelector);
 
+    this.isActive = false;
     this.input = this.el.querySelector("[data-js-taskInput]");
     this.submitButton = this.el.querySelector("[data-js-submitTaskButton]");
     this.cancelButton = this.el.querySelector("[data-js-cancelTaskButton]");

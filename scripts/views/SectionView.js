@@ -55,7 +55,7 @@ export default class SectionView {
     this.selectors.submitButton.addEventListener("click", () => {
       if (this.selectors.input.value.trim() === "") return;
       section.title = this.saveTitle();
-      this.isEditing = false;
+      this.cancelEditing();
     });
 
     this.selectors.input.addEventListener("keydown", (e) => {
@@ -63,7 +63,8 @@ export default class SectionView {
 
       if (this.selectors.input.value.trim() === "") return;
       section.title = this.saveTitle();
-      this.isEditing = false;
+
+      this.cancelEditing();
     });
   }
 
@@ -73,8 +74,9 @@ export default class SectionView {
         controller.sections = controller.sections.filter(
           (item) => item.id !== section.id
         );
+        controller.sectionViews.delete(section.id);
       }
-      this.isEditing = false;
+      this.cancelEditing();
       this.cancelTitle();
     });
 
@@ -85,8 +87,9 @@ export default class SectionView {
         controller.sections = controller.sections.filter(
           (item) => item.id !== section.id
         );
+        controller.sectionViews.delete(section.id);
       }
-      this.isEditing = false;
+      this.cancelEditing();
       this.cancelTitle();
     });
   }
@@ -199,6 +202,12 @@ export default class SectionView {
     this.selectors.taskList.appendChild(view.el);
   }
 
+  cancelEditing() {
+    if (this.isEditing) {
+      this.isEditing = false;
+      this.cancelTitle();
+    }
+  }
   remove() {
     this.el.remove();
   }

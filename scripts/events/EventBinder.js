@@ -1,4 +1,4 @@
-import { $, addVisibility, toggleVisibility } from "../utils/dom.js";
+import { $, addVisibility } from "../utils/dom.js";
 
 export default class EventBinder {
   constructor(controller) {
@@ -8,19 +8,26 @@ export default class EventBinder {
 
     this.sidebarToggle = $("[data-js-sidebarToggle]");
     this.sidebar = $("[data-js-sidebar]");
-    this.main = $("[data-js-main]");
 
     this.sortButton = $("[data-js-sortButton]");
     this.sortSelect = $("[data-js-sortSelect]");
+    this.themeButton = $("[data-js-themeButton]");
   }
 
   bindEvents() {
     this.sidebarToggle?.addEventListener("click", () => {
-      this.sidebar?.classList.toggle("--open");
+      this.sidebar?.classList.toggle("--closed");
     });
 
     this.addSectionButton?.addEventListener("click", () => {
       this.controller.addSection();
+    });
+
+    this.themeButton.addEventListener("click", () => {
+      const theme = document.documentElement.getAttribute("theme");
+      theme === "light"
+        ? document.documentElement.setAttribute("theme", "dark")
+        : document.documentElement.setAttribute("theme", "light");
     });
 
     document.addEventListener("click", (e) => {
