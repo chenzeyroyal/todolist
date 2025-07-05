@@ -628,7 +628,6 @@ input[type="text"] {
   html,
   body {
     overflow-y: auto;
-    height: 100%;
   }
   .sidebar__theme {
     margin-top: 21.875rem;
