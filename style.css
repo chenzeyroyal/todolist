@@ -624,9 +624,15 @@ input[type="text"] {
   .todo__sections {
     gap: 3rem;
   }
-
+}
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-y: auto;
+    height: 100%;
+  }
   .sidebar__theme {
-    margin-top: 20.3125rem;
+    margin-top: 21.875rem;
   }
 }
 @media (hover: hover) {
