@@ -114,8 +114,11 @@ button {
   --transition-duration-02: 0.3s;
 
   /* ICONS */
-  --icon-width: 1.5rem;
-  --icon-height: 1.5rem;
+  --icon-width: 20px;
+  --icon-height: 20px;
+
+  /* Z-INDEX */
+  --modal: 1000;
 
   /* SIZES */
 
@@ -159,7 +162,7 @@ button {
     opacity var(--transition-duration) ease;
   right: 1rem;
   position: fixed;
-
+  z-index: var(--modal);
   opacity: 0;
 }
 
@@ -174,6 +177,10 @@ button {
   transition: background var(--transition-duration) ease-in-out;
   border-radius: var(--border-radius);
   padding: var(--padding);
+}
+.button svg {
+  width: var(--icon-width);
+  height: var(--icon-height);
 }
 
 .icon-wrapper {
@@ -249,7 +256,7 @@ button {
 }
 
 .sidebar__theme {
-  margin-top: 400px;
+  margin-top: 25rem;
 }
 
 .sidebar__theme-button {
@@ -417,7 +424,9 @@ input[type="text"] {
     opacity var(--transition-duration) ease,
     background var(--transition-duration) ease;
 }
-
+.todo__list-add-button {
+  justify-content: flex-start;
+}
 .todo__list-item-text {
   width: 100%;
   word-break: keep-all;
@@ -614,6 +623,10 @@ input[type="text"] {
 @media (max-width: 1100px) {
   .todo__sections {
     gap: 3rem;
+  }
+
+  .sidebar__theme {
+    margin-top: 20.3125rem;
   }
 }
 @media (hover: hover) {
