@@ -55,7 +55,6 @@ body {
   font-style: normal;
   font-variation-settings: "wdth" 100;
   margin: 0;
-  padding-top: 1rem;
   transition: background var(--transition-duration) ease-in-out;
 }
 
@@ -207,7 +206,7 @@ button {
   background-color: var(--color-light);
   z-index: 1000;
   width: var(--sidebar-width);
-  padding: var(--padding-02);
+  padding: var(--padding-02) var(--padding-02) 0 var(--padding-02);
   transition: transform var(--transition-duration-02) ease-in-out,
     width var(--transition-duration-02) ease-in-out,
     background var(--transition-duration) ease-in-out;
