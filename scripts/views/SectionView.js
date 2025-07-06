@@ -36,7 +36,7 @@ export default class SectionView {
     this.classes = {
       inactiveButton: "--inactive",
     };
-
+    this.onScroll();
     this.checkInput();
   }
 
@@ -104,6 +104,26 @@ export default class SectionView {
   onShowTaskInput(controller, section) {
     this.selectors.showTaskFieldButton.addEventListener("click", () => {
       controller.showTaskInput(section.id);
+    });
+  }
+
+  onScroll() {
+    this.selectors.taskList.addEventListener("scroll", () => {
+      const { scrollTop, scrollHeight, clientHeight } = this.selectors.taskList;
+
+      // Верх достигнут
+      if (scrollTop === 0) {
+        this.selectors.taskList.classList.add("--top-reached");
+      } else {
+        this.selectors.taskList.classList.remove("--top-reached");
+      }
+
+      // Низ достигнут
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.selectors.taskList.classList.add("--bottom-reached");
+      } else {
+        this.selectors.taskList.classList.remove("--bottom-reached");
+      }
     });
   }
 
@@ -200,6 +220,7 @@ export default class SectionView {
 
   addTaskView(view) {
     this.selectors.taskList.appendChild(view.el);
+    this.selectors.taskList.scrollTop = this.selectors.taskList.scrollHeight;
   }
 
   cancelEditing() {

@@ -101,6 +101,7 @@ button {
 
   /* BORDERS */
   --border: 0.063rem solid var(--color-accent);
+  --border-reached: 0.063rem solid var(--color-dark-03);
   --border-radius: 0.625rem;
 
   /* PADDINGS */
@@ -411,10 +412,21 @@ input[type="text"] {
   display: flex;
   flex-direction: column;
   gap: var(--gap-02);
-  height: 50vh;
+  max-height: 50vh;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding-block: var(--padding);
+  border-top: 0.063rem solid transparent;
+  border-bottom: 0.063rem solid transparent;
+  border-radius: 0.063rem;
+  transition: border var(--transition-duration) ease-in-out;
+}
+.todo__list-border {
+  height: 1px;
+  background-color: red;
+  width: 70%;
+  opacity: 0;
 }
 
 .todo__list::-webkit-scrollbar {
@@ -449,9 +461,6 @@ input[type="text"] {
   gap: var(--gap);
 }
 
-.todo__list-item:last-child {
-  margin-bottom: var(--gap-02);
-}
 .todo__list-item-radio {
   width: var(--radio-width);
   height: var(--radio-width);
@@ -596,6 +605,12 @@ input[type="text"] {
 }
 .sidebar.--closed + .main {
   padding-left: calc(var(--sidebar-width) / 2);
+}
+.todo__list.--top-reached {
+  border-color: var(--color-dark-03);
+}
+.todo__list.--bottom-reached {
+  border-color: var(--color-dark-03);
 }
 
 /* Task */
