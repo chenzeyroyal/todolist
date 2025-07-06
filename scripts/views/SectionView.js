@@ -110,16 +110,17 @@ export default class SectionView {
   onScroll() {
     this.selectors.taskList.addEventListener("scroll", () => {
       const { scrollTop, scrollHeight, clientHeight } = this.selectors.taskList;
+      const isScrolalble = scrollHeight > clientHeight;
 
       // Верх достигнут
-      if (scrollTop === 0) {
+      if (scrollTop === 0 && isScrolalble) {
         this.selectors.taskList.classList.add("--top-reached");
       } else {
         this.selectors.taskList.classList.remove("--top-reached");
       }
 
       // Низ достигнут
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight - 1 && isScrolalble) {
         this.selectors.taskList.classList.add("--bottom-reached");
       } else {
         this.selectors.taskList.classList.remove("--bottom-reached");
