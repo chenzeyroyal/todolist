@@ -4,6 +4,10 @@
   font-family: inherit;
   font-size: inherit;
 }
+html,
+body {
+  overflow-y: hidden;
+}
 
 ul {
   list-style: none;
@@ -407,6 +411,14 @@ input[type="text"] {
   display: flex;
   flex-direction: column;
   gap: var(--gap-02);
+  height: 50vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.todo__list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .todo__list-item {
@@ -625,10 +637,6 @@ input[type="text"] {
   }
 }
 @media (max-width: 768px) {
-  html,
-  body {
-    overflow-y: auto;
-  }
   .sidebar__theme {
     margin-top: 21.875rem;
   }
