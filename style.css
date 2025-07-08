@@ -350,8 +350,12 @@ html[theme="dark"] .sidebar__theme-button-moon-icon {
   position: relative;
 }
 .todo__sort-select {
-  top: 3rem;
-  left: 2rem;
+  left: 10rem;
+  flex-direction: row;
+  white-space: nowrap;
+}
+.todo__sort-select-option {
+  cursor: pointer;
 }
 .todo__date {
   color: var(--color-dark);
