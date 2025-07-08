@@ -3,18 +3,25 @@ import {
   slide,
   show,
   unShow,
+  handleSelects,
 } from "../utils/dom.js";
 export default class TaskView {
   constructor(task, templateSelector) {
-    this.el = this.renderTask(task, templateSelector);
+    this.el = this.render(task, templateSelector);
     this.task = task;
+    this.animationTime = 200;
 
     this.text = this.el.querySelector("[data-js-taskTextContainer]");
     this.radio = this.el.querySelector("[data-js-todoRadio]");
+    this.showTaskSelectButton = this.el.querySelector(
+      "[data-js-showTaskSelectButton]"
+    );
+    this.editTaskButton = this.el.querySelector("[data-js-editTaskButton]");
     this.deleteButton = this.el.querySelector("[data-js-deleteTaskButton]");
+    this.taskSelect = this.el.querySelector("[data-js-taskSelect]");
   }
 
-  renderTask(task, templateSelector) {
+  render(task, templateSelector) {
     const fragment = createElementFromTemplate(templateSelector);
     const li = fragment.querySelector("li");
 
@@ -38,10 +45,12 @@ export default class TaskView {
   }
 
   onEdit(callback) {
-    this.el.addEventListener("click", (e) => {
-      if (e.target.closest("label") || e.target.closest("button")) return;
+    this.editTaskButton.addEventListener("click", (e) => {
+      if (e.target.closest("label")) return;
       callback(this.el.dataset.id);
     });
+
+    handleSelects(this.showTaskSelectButton, this.taskSelect);
   }
 
   onDelete(callback) {
@@ -69,6 +78,6 @@ export default class TaskView {
 
   remove() {
     unShow(this.el);
-    setTimeout(() => this.el.remove(), 200);
+    setTimeout(() => this.el.remove(), this.animationTime);
   }
 }

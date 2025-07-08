@@ -7,7 +7,7 @@ import {
 
 export default class SectionView {
   constructor(section, templateSelector) {
-    this.el = this.renderSection(section, templateSelector);
+    this.el = this.render(section, templateSelector);
     this.isEditing = false;
     this.currentSort = "date";
     this.taskInputView = null;
@@ -36,11 +36,22 @@ export default class SectionView {
     this.classes = {
       inactiveButton: "--inactive",
     };
+
     this.onScroll();
     this.checkInput();
+    this.getData();
   }
 
-  renderSection(section, templateSelector) {
+  getData() {
+    this.selectors.title.textContent = this.section.title;
+
+    if (!this.section.title) return;
+    this.cancelTitle();
+    if (this.isEditing) return;
+    this.showAddTaskButton();
+  }
+
+  render(section, templateSelector) {
     const sectionEl = document.createElement("div");
     sectionEl.classList.add("todo__sections-column");
     sectionEl.dataset.id = section.id;
@@ -51,20 +62,22 @@ export default class SectionView {
     return sectionEl;
   }
 
-  onSubmit(section) {
+  onSubmit(callback) {
     this.selectors.submitButton.addEventListener("click", () => {
       if (this.selectors.input.value.trim() === "") return;
-      section.title = this.saveTitle();
+      this.saveTitle();
       this.cancelEditing();
+      callback();
     });
 
     this.selectors.input.addEventListener("keydown", (e) => {
       if (e.key !== "Enter") return;
 
       if (this.selectors.input.value.trim() === "") return;
-      section.title = this.saveTitle();
+      this.saveTitle();
 
       this.cancelEditing();
+      callback();
     });
   }
 
@@ -112,16 +125,24 @@ export default class SectionView {
       const { scrollTop, scrollHeight, clientHeight } = this.selectors.taskList;
       const isScrolalble = scrollHeight > clientHeight;
 
-      // Верх достигнут
       if (scrollTop === 0 && isScrolalble) {
         this.selectors.taskList.classList.add("--top-reached");
+        setTimeout(
+          () => this.selectors.taskList.classList.remove("--top-reached"),
+          500
+        );
+        this.selectors.taskList.classList.remove("--bottom-reached");
       } else {
         this.selectors.taskList.classList.remove("--top-reached");
       }
 
-      // Низ достигнут
       if (scrollTop + clientHeight >= scrollHeight - 1 && isScrolalble) {
         this.selectors.taskList.classList.add("--bottom-reached");
+        setTimeout(
+          () => this.selectors.taskList.classList.remove("--bottom-reached"),
+          500
+        );
+        this.selectors.taskList.classList.remove("--top-reached");
       } else {
         this.selectors.taskList.classList.remove("--bottom-reached");
       }
@@ -146,7 +167,7 @@ export default class SectionView {
 
   checkInput() {
     this.selectors.input.addEventListener("input", () => {
-      if (this.selectors.input.value.trim("") === "") {
+      if (this.selectors.input.value.trim() === "") {
         this.setSubmitToInactive();
       } else {
         this.setSubmitToActive();
@@ -164,46 +185,53 @@ export default class SectionView {
 
   saveTitle() {
     const value = this.selectors.input.value;
-    this.selectors.title.textContent = value;
+    this.section.title = value;
+    this.selectors.title.textContent = this.section.title;
 
-    toggleVisibility(this.selectors.input, false);
-    toggleVisibility(this.selectors.title, true);
-    toggleVisibility(this.selectors.buttonContainer, false);
+    this.handleEditingView();
     toggleVisibility(this.selectors.showTaskFieldButton, true);
-
-    return value;
   }
 
   cancelTitle() {
     const title = this.selectors.title.textContent;
     this.selectors.input.value = title;
 
-    toggleVisibility(this.selectors.input, false);
-    toggleVisibility(this.selectors.title, true);
-    toggleVisibility(this.selectors.buttonContainer, false);
+    this.handleEditingView();
 
     if (title === "") this.remove();
   }
 
   editTitle() {
-    toggleVisibility(this.selectors.input, true);
-    toggleVisibility(this.selectors.title, false);
+    this.isEditing = true;
 
-    this.selectors.input.focus();
-    this.selectors.input.setSelectionRange(
-      this.selectors.input.value.length,
-      this.selectors.input.value.length
-    );
+    this.handleEditingView();
+  }
 
-    removeVisibility(this.selectors.buttonContainer, true);
+  handleEditingView() {
+    if (this.isEditing) {
+      toggleVisibility(this.selectors.input, true);
+      toggleVisibility(this.selectors.title, false);
+
+      this.selectors.input.focus();
+      this.selectors.input.setSelectionRange(
+        this.selectors.input.value.length,
+        this.selectors.input.value.length
+      );
+
+      addVisibility(this.selectors.buttonContainer);
+    } else {
+      toggleVisibility(this.selectors.input, false);
+      toggleVisibility(this.selectors.title, true);
+      toggleVisibility(this.selectors.buttonContainer, false);
+    }
   }
 
   showAddTaskButton() {
-    removeVisibility(this.selectors.showTaskFieldButton, true);
+    addVisibility(this.selectors.showTaskFieldButton);
   }
 
   hideAddTaskButton() {
-    addVisibility(this.selectors.showTaskFieldButton, true);
+    removeVisibility(this.selectors.showTaskFieldButton, true);
   }
 
   setTaskInputView(view) {

@@ -1,4 +1,4 @@
-import { $, addVisibility } from "../utils/dom.js";
+import { $, handleSelects } from "../utils/dom.js";
 
 export default class EventBinder {
   constructor(controller) {
@@ -28,14 +28,12 @@ export default class EventBinder {
       theme === "light"
         ? document.documentElement.setAttribute("theme", "dark")
         : document.documentElement.setAttribute("theme", "light");
+
+      const newTheme = document.documentElement.getAttribute("theme");
+
+      localStorage.setItem("theme", newTheme);
     });
 
-    document.addEventListener("click", (e) => {
-      if (this.sortButton.contains(e.target)) {
-        this.sortSelect.classList.toggle("--hidden");
-      } else {
-        addVisibility(this.sortSelect);
-      }
-    });
+    handleSelects(this.sortButton, this.sortSelect);
   }
 }

@@ -16,11 +16,11 @@ export function toggleVisibility(element, isVisible) {
 }
 
 export function addVisibility(element) {
-  element.classList.add(hideClass);
+  element.classList.remove(hideClass);
 }
 
 export function removeVisibility(element) {
-  element.classList.remove(hideClass);
+  element.classList.add(hideClass);
 }
 
 export function slide(element) {
@@ -41,4 +41,14 @@ export function displayModal(modal) {
   setTimeout(() => {
     modal.classList.remove(showClass);
   }, 3000);
+}
+
+export function handleSelects(button, select) {
+  document.addEventListener("click", (e) => {
+    if (button.contains(e.target)) {
+      select.classList.toggle("--hidden");
+    } else {
+      removeVisibility(select);
+    }
+  });
 }

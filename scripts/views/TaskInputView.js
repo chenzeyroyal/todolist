@@ -1,12 +1,17 @@
 import {
   createElementFromTemplate,
-  toggleVisibility,
-  addVisibility,
+  removeVisibility,
+  handleSelects,
 } from "../utils/dom.js";
 
 export default class TaskInputView {
+  classes = {
+    inactiveButton: "--inactive",
+    hidden: "--hidden",
+  };
+
   constructor(templateSelector) {
-    this.el = this.renderTaskInputField(templateSelector);
+    this.el = this.render(templateSelector);
 
     this.isActive = false;
     this.input = this.el.querySelector("[data-js-taskInput]");
@@ -19,13 +24,10 @@ export default class TaskInputView {
       if (e.target.closest("[data-js-sectiontitlecontainer]")) this.remove();
     });
 
-    this.classes = {
-      inactiveButton: "--inactive",
-    };
     this.checkInput();
   }
 
-  renderTaskInputField(templateSelector) {
+  render(templateSelector) {
     const taskInputEl = document.createElement("div");
     taskInputEl.classList.add("todo__list-input-field");
 
@@ -78,14 +80,12 @@ export default class TaskInputView {
   }
 
   onSelectPriority(callback) {
-    this.priorityButton.addEventListener("click", () => {
-      toggleVisibility(this.priorityList, true);
-    });
+    handleSelects(this.priorityButton, this.priorityList);
 
     this.priorityList.addEventListener("click", (e) => {
       const label = e.target.closest("LABEL");
       if (!label) return;
-      addVisibility(this.priorityList, true);
+      removeVisibility(this.priorityList);
       this.focus();
 
       const input = label.querySelector("input");

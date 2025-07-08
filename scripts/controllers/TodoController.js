@@ -21,7 +21,15 @@ export default class TodoController {
       maxTasksModal: $("[data-js-maxTasksModal]"),
     };
 
+    this.loadFromLocalStorage();
     this.getDate();
+    this.loadTheme();
+  }
+
+  loadTheme() {
+    const theme = localStorage.getItem("theme");
+    if (!theme) return;
+    document.documentElement.setAttribute("theme", theme);
   }
 
   getDate() {
@@ -38,7 +46,7 @@ export default class TodoController {
     this.selectors.date.textContent = formatted;
   }
 
-  addSection(title = "") {
+  addSection(title) {
     this.sectionViews.forEach((view) => {
       if (view.taskInputView?.isActive) {
         view.clearTaskInputView();
@@ -60,6 +68,7 @@ export default class TodoController {
       this.selectors.sectionTemplate
     );
     sectionView.isEditing = true;
+
     this.sectionViews.set(section.id, sectionView);
     this.selectors.container.appendChild(sectionView.el);
     this.selectors.container.insertBefore(
@@ -68,7 +77,7 @@ export default class TodoController {
     );
     sectionView.selectors.input.focus();
 
-    sectionView.onSubmit(section);
+    sectionView.onSubmit(() => this.saveToLocalStorage());
     sectionView.onCancel(this, section);
     sectionView.onEdit();
     sectionView.onShowTaskInput(this, section);
@@ -100,6 +109,7 @@ export default class TodoController {
     taskView.onEdit((taskId) => {
       this.showTaskEditingInput(sectionId, taskId);
       sectionView.taskInputView?.setSubmitToActive();
+      this.saveToLocalStorage();
     });
 
     taskView.onCompleteTask(() => {
@@ -107,11 +117,13 @@ export default class TodoController {
         sectionView.clearTaskInputView();
         this.sortTasks(sectionId, "status");
       }, 1000);
+      this.saveToLocalStorage();
     });
 
     taskView.onDelete((taskId) => {
       sectionView.clearTaskInputView();
       this.removeTask(taskId, sectionId);
+      this.saveToLocalStorage();
     });
   }
 
@@ -190,10 +202,12 @@ export default class TodoController {
 
       taskView.update(text, priority);
       sectionView.clearTaskInputView();
+      this.saveToLocalStorage();
     });
 
     taskInputField.onCancel(() => {
       sectionView.clearTaskInputView();
+      this.saveToLocalStorage();
     });
   }
 
@@ -209,9 +223,12 @@ export default class TodoController {
       this.taskViews.delete(taskId);
 
       const sectionView = this.sectionViews.get(sectionId);
-      if (sectionView) {
-        this.sortTasks(sectionId, sectionView.currentSort);
-      }
+
+      setTimeout(() => {
+        if (sectionView) {
+          this.sortTasks(sectionId, sectionView.currentSort);
+        }
+      }, view.animationTime);
     }
   }
 
@@ -230,6 +247,7 @@ export default class TodoController {
         view.slide();
       }
     });
+    this.saveToLocalStorage();
   }
 
   closeAllInputs() {
@@ -242,5 +260,68 @@ export default class TodoController {
         view.cancelEditing();
       }
     });
+  }
+
+  loadFromLocalStorage() {
+    const savedData = localStorage.getItem("todoAppData");
+    if (savedData) {
+      const data = JSON.parse(savedData);
+
+      data.sections.forEach((sectionData) => {
+        const section = new Section(sectionData.title);
+        section.id = sectionData.id;
+
+        sectionData.tasks.forEach((taskData) => {
+          const task = section.addTask(taskData.text, taskData.priority);
+          task.id = taskData.id;
+          task.completed = taskData.completed;
+        });
+
+        this.sections.push(section);
+
+        const sectionView = new SectionView(
+          section,
+          this.selectors.sectionTemplate
+        );
+        this.sectionViews.set(section.id, sectionView);
+        this.selectors.container.appendChild(sectionView.el);
+        this.selectors.container.insertBefore(
+          sectionView.el,
+          this.selectors.addSectionContainer
+        );
+
+        sectionView.onSubmit(() => {
+          this.saveToLocalStorage();
+        });
+
+        sectionView.onCancel(this, section);
+        sectionView.onEdit();
+        sectionView.onShowTaskInput(this, section);
+        sectionView.onSortTasks((sectionId, criterion) =>
+          this.sortTasks(sectionId, criterion)
+        );
+
+        section.tasks.forEach((task) => {
+          this.renderTask(task, section.id, task.priority);
+        });
+      });
+    }
+  }
+
+  saveToLocalStorage() {
+    const data = {
+      sections: this.sections.map((section) => ({
+        id: section.id,
+        title: section.title,
+        tasks: section.tasks.map((task) => ({
+          id: task.id,
+          text: task.text,
+          priority: task.priority,
+          createdAt: task.createdAt,
+          isActive: task.isActive,
+        })),
+      })),
+    };
+    localStorage.setItem("todoAppData", JSON.stringify(data));
   }
 }
