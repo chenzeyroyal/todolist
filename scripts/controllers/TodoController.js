@@ -22,7 +22,7 @@ export default class TodoController {
     };
 
     this.loadFromLocalStorage();
-    this.getDate();
+    // this.getDate();
     this.loadTheme();
   }
 

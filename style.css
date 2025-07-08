@@ -76,6 +76,7 @@ body {
 main {
   transition: padding var(--transition-duration-02) ease-in-out;
   padding-left: calc(var(--sidebar-width) + 2rem);
+  margin-top: 40px;
 }
 
 label,
@@ -344,18 +345,22 @@ html[theme="dark"] .sidebar__theme-button-moon-icon {
   align-items: center;
   gap: var(--gap-02);
   position: fixed;
+  padding-top: 1rem;
   top: 0;
 }
 .todo__sort {
   position: relative;
+  color: var(--color-dark-02);
 }
 .todo__sort-select {
   left: 10rem;
-  flex-direction: row;
   white-space: nowrap;
 }
 .todo__sort-select-option {
   cursor: pointer;
+}
+.todo__sort-select-option .custom-option {
+  padding: 5px;
 }
 .todo__date {
   color: var(--color-dark);
