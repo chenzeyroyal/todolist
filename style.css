@@ -146,7 +146,7 @@ button {
 
 :root[theme="dark"] {
   --color-light: #222222;
-  --color-dark: #ffffff;
+  --color-dark: var(--color-dark-02);
 
   --color-dark-02: #f8f8f8;
 
@@ -210,7 +210,7 @@ button {
   flex-direction: column;
   background-color: var(--color-light);
   position: absolute;
-  border: 0.063rem solid var(--color-dark-04);
+  border: 0.063rem solid var(--color-dark-02);
   z-index: var(--select);
 }
 .custom-select label:has(input:checked) {
