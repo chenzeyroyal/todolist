@@ -179,9 +179,6 @@
           Достигнуто максимальное количество задач!
         </div>
         <div class="todo__header">
-          <!-- <div class="todo__date">
-            <h3 data-js-date></h3>
-          </div> -->
           <div class="todo__sort">
             <ul
               class="todo__sort-select custom-select --hidden"
@@ -258,17 +255,39 @@
         </div>
         <template data-js-section>
           <div class="todo__sections-column-title">
-            <div
-              class="todo__sections-column-title-text input-wrapper"
-              data-js-sectionTitleContainer
-            >
-              <input
-                type="text"
-                placeholder="Название раздела"
-                maxlength="24"
-                data-js-sectionTitleInput
-              />
-              <h4 class="--hidden" data-js-sectionTitleText></h4>
+            <div class="todo__sections-controls">
+              <div
+                class="todo__sections-column-title-text input-wrapper"
+                data-js-sectionTitleContainer
+              >
+                <input
+                  type="text"
+                  placeholder="Название раздела"
+                  maxlength="24"
+                  data-js-sectionTitleInput
+                />
+                <h4 class="--hidden" data-js-sectionTitleText></h4>
+              </div>
+              <button
+                class="todo__sections-delete-button button"
+                data-js-deleteSectionButton
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-x-icon lucide-x"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
             </div>
 
             <div

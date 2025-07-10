@@ -1,7 +1,7 @@
 import Section from "../models/Section.js";
-import SectionView from "../views/SectionView.js";
-import TaskView from "../views/TaskView.js";
-import TaskInputView from "../views/TaskInputView.js";
+import SectionView from "../views/section/SectionView.js";
+import TaskView from "../views/task/TaskView.js";
+import TaskInputView from "../views/task/TaskInputView.js";
 import { $, displayModal } from "../utils/dom.js";
 
 export default class TodoController {
@@ -9,6 +9,9 @@ export default class TodoController {
     this.sections = [];
     this.taskViews = new Map();
     this.sectionViews = new Map();
+
+    this.maxSections = 5;
+    this.maxTasks = 15;
 
     this.selectors = {
       container: $("[data-js-todoSections]"),
@@ -20,9 +23,7 @@ export default class TodoController {
       maxSectionsModal: $("[data-js-maxSectionsModal]"),
       maxTasksModal: $("[data-js-maxTasksModal]"),
     };
-
     this.loadFromLocalStorage();
-    // this.getDate();
     this.loadTheme();
   }
 
@@ -30,20 +31,6 @@ export default class TodoController {
     const theme = localStorage.getItem("theme");
     if (!theme) return;
     document.documentElement.setAttribute("theme", theme);
-  }
-
-  getDate() {
-    const today = new Date();
-
-    const formatter = new Intl.DateTimeFormat("ru-RU", {
-      weekday: "short", // "чт"
-      day: "numeric", // "12"
-      month: "long", // "июня"
-    });
-
-    const formatted = formatter.format(today);
-
-    this.selectors.date.textContent = formatted;
   }
 
   addSection(title) {
@@ -55,7 +42,7 @@ export default class TodoController {
 
     if (this.hasUnfinishedSection()) return;
 
-    if (this.sectionViews.size === 6) {
+    if (this.sectionViews.size > this.maxSections) {
       displayModal(this.selectors.maxSectionsModal);
       return;
     }
@@ -65,9 +52,9 @@ export default class TodoController {
 
     const sectionView = new SectionView(
       section,
-      this.selectors.sectionTemplate
+      this.selectors.sectionTemplate,
+      this
     );
-    sectionView.isEditing = true;
 
     this.sectionViews.set(section.id, sectionView);
     this.selectors.container.appendChild(sectionView.el);
@@ -75,15 +62,8 @@ export default class TodoController {
       sectionView.el,
       this.selectors.addSectionContainer
     );
-    sectionView.selectors.input.focus();
 
-    sectionView.onSubmit(() => this.saveToLocalStorage());
-    sectionView.onCancel(this, section);
-    sectionView.onEdit();
-    sectionView.onShowTaskInput(this, section);
-    sectionView.onSortTasks((sectionId, criterion) =>
-      this.sortTasks(sectionId, criterion)
-    );
+    sectionView.setEditingState(true);
   }
 
   hasUnfinishedSection() {
@@ -96,8 +76,12 @@ export default class TodoController {
     const sectionView = this.sectionViews.get(sectionId);
 
     if (!sectionView) return;
-
-    const taskView = new TaskView(task, this.selectors.taskTemplate);
+    const taskView = new TaskView(
+      task,
+      this.selectors.taskTemplate,
+      this,
+      sectionView
+    );
 
     this.taskViews.set(task.id, taskView);
     taskView.el.setAttribute("priority", priority);
@@ -105,32 +89,12 @@ export default class TodoController {
     sectionView.addTaskView(taskView);
 
     taskView.show();
-
-    taskView.onEdit((taskId) => {
-      this.showTaskEditingInput(sectionId, taskId);
-      sectionView.taskInputView?.setSubmitToActive();
-      this.saveToLocalStorage();
-    });
-
-    taskView.onCompleteTask(() => {
-      setTimeout(() => {
-        sectionView.clearTaskInputView();
-        this.sortTasks(sectionId, "status");
-      }, 1000);
-      this.saveToLocalStorage();
-    });
-
-    taskView.onDelete((taskId) => {
-      sectionView.clearTaskInputView();
-      this.removeTask(taskId, sectionId);
-      this.saveToLocalStorage();
-    });
   }
 
   showTaskInput(sectionId) {
     const sectionView = this.sectionViews.get(sectionId);
 
-    if (this.taskViews.size === 15) {
+    if (this.taskViews.size > this.maxTasks) {
       displayModal(this.selectors.maxTasksModal);
 
       return;
@@ -232,6 +196,19 @@ export default class TodoController {
     }
   }
 
+  removeSection(sectionId) {
+    const section = this.sections.find((s) => s.id === sectionId);
+    this.sections = this.sections.filter((s) => s.id !== sectionId);
+
+    if (!section) return;
+
+    const view = this.sectionViews.get(sectionId);
+    if (view) {
+      view.remove();
+      this.sectionViews.delete(sectionId);
+    }
+  }
+
   sortTasks(sectionId, criterion) {
     const section = this.sections.find((s) => s.id === sectionId);
     const sectionView = this.sectionViews.get(sectionId);
@@ -281,24 +258,15 @@ export default class TodoController {
 
         const sectionView = new SectionView(
           section,
-          this.selectors.sectionTemplate
+          this.selectors.sectionTemplate,
+          this
         );
+
         this.sectionViews.set(section.id, sectionView);
         this.selectors.container.appendChild(sectionView.el);
         this.selectors.container.insertBefore(
           sectionView.el,
           this.selectors.addSectionContainer
-        );
-
-        sectionView.onSubmit(() => {
-          this.saveToLocalStorage();
-        });
-
-        sectionView.onCancel(this, section);
-        sectionView.onEdit();
-        sectionView.onShowTaskInput(this, section);
-        sectionView.onSortTasks((sectionId, criterion) =>
-          this.sortTasks(sectionId, criterion)
         );
 
         section.tasks.forEach((task) => {

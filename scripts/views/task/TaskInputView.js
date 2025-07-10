@@ -2,7 +2,9 @@ import {
   createElementFromTemplate,
   removeVisibility,
   handleSelects,
-} from "../utils/dom.js";
+  setButtonToActive,
+  setButtonToInactive,
+} from "../../utils/dom.js";
 
 export default class TaskInputView {
   classes = {
@@ -99,19 +101,11 @@ export default class TaskInputView {
   checkInput() {
     this.input.addEventListener("input", () => {
       if (this.input.value.trim("") === "") {
-        this.setSubmitToInactive();
+        setButtonToInactive(this.submitButton);
       } else {
-        this.setSubmitToActive();
+        setButtonToActive(this.submitButton);
       }
     });
-  }
-
-  setSubmitToActive() {
-    this.submitButton.classList.remove(this.classes.inactiveButton);
-  }
-
-  setSubmitToInactive() {
-    this.submitButton.classList.add(this.classes.inactiveButton);
   }
 
   clear() {

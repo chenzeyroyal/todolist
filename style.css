@@ -12,7 +12,6 @@ body {
   height: 100dvh;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-block: var(--padding);
 }
 
 ul {
@@ -76,7 +75,6 @@ body {
 main {
   transition: padding var(--transition-duration-02) ease-in-out;
   padding-left: calc(var(--sidebar-width) + 2rem);
-  margin-top: 40px;
 }
 
 label,
@@ -109,6 +107,7 @@ button {
 
   /* SHADOWS */
   --shadow: 0 0 0.25rem 0.2rem rgb(0, 0, 0, 0.2);
+  --shadow-02: 0 0 0.25rem 0.01rem rgb(0, 0, 0, 0.2);
   --shadow-hover: 0 0 0.25rem 0.4rem rgb(0, 0, 0, 0.1);
 
   /* BORDERS */
@@ -152,6 +151,8 @@ button {
   --color-dark-02: #f8f8f8;
 
   --shadow: 0 0rem 0.2rem 0.25rem rgba(255, 255, 255, 0.3);
+  --shadow-02: 0 0 0.25rem 0.01rem rgba(255, 255, 255, 0.2);
+
   --shadow-hover: 0 0rem 0.25rem 0.4rem rgba(255, 255, 255, 0.3);
 }
 /* --- UTILS --- */
@@ -211,15 +212,14 @@ button {
   flex-direction: column;
   background-color: var(--color-light);
   position: absolute;
-  border: 0.063rem solid var(--color-dark-02);
+  border: 0.063rem solid var(--color-dark-03);
+  box-shadow: var(--shadow-02);
   z-index: var(--select);
 }
 .custom-select label:has(input:checked) {
   background-color: var(--color-dark-03);
 }
-.custom-option:has(.select-button) {
-  padding: 0;
-}
+
 .select-button {
   background: none;
   width: 100%;
@@ -237,6 +237,9 @@ button {
   padding: 0.625rem;
   font-size: 14px;
   cursor: pointer;
+}
+.custom-option:has(.select-button) {
+  padding: 0.3125rem;
 }
 .custom-option input {
   display: none;
@@ -344,9 +347,9 @@ html[theme="dark"] .sidebar__theme-button-moon-icon {
   display: flex;
   align-items: center;
   gap: var(--gap-02);
-  position: fixed;
-  padding-top: 1rem;
-  top: 0;
+  padding-top: var(--padding-02);
+  /* position: fixed; */
+  /* top: 0; */
 }
 .todo__sort {
   position: relative;
@@ -356,22 +359,9 @@ html[theme="dark"] .sidebar__theme-button-moon-icon {
   left: 10rem;
   white-space: nowrap;
 }
-.todo__sort-select-option {
-  cursor: pointer;
-}
-.todo__sort-select-option .custom-option {
-  padding: 5px;
-}
-.todo__date {
-  color: var(--color-dark);
-}
-.todo__date h3 {
-  white-space: nowrap;
-}
 .todo__sections {
   display: flex;
   gap: var(--gap-03);
-  margin-top: 3.75rem;
 }
 .todo__sections-column {
   width: var(--section-width);
@@ -394,10 +384,19 @@ input[type="text"] {
   background-color: var(--color-light);
   color: var(--color-dark);
 }
+.todo__sections-controls {
+  display: flex;
+  align-items: center;
+}
+.todo__sections-delete-button {
+  justify-self: flex-end;
+}
 .todo__sections-column-title-text {
   cursor: text;
   position: relative;
   color: var(--color-dark);
+  align-self: flex-end;
+  width: 100%;
 }
 
 .todo__sections-column-title-text input {
@@ -448,7 +447,7 @@ input[type="text"] {
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-block: var(--padding);
+  padding-block: var(--padding-02);
   border-top: 0.063rem solid transparent;
   border-bottom: 0.063rem solid transparent;
   border-radius: 0.063rem;
@@ -491,12 +490,6 @@ input[type="text"] {
   word-break: keep-all;
 }
 
-.todo__list-item-edit {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-}
-
 .todo__list-item-radio {
   width: var(--radio-width);
   height: var(--radio-width);
@@ -526,9 +519,7 @@ input[type="text"] {
 }
 .todo__list-item-select {
   left: 7rem;
-}
-.todo__list-item-option {
-  padding: 0.1875rem;
+  /* flex-direction: row; */
 }
 .todo__list-item-delete-button svg {
   color: var(--color-accent);
