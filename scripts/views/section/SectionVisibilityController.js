@@ -10,16 +10,11 @@ export default class SectionVisibilityController {
   handleEditingView(isEditing) {
     if (isEditing) {
       addVisibility(this.selectors.input);
+      addVisibility(this.selectors.buttonContainer);
+      this.selectors.input.focus();
 
       removeVisibility(this.selectors.title);
       removeVisibility(this.selectors.showTaskFieldButton);
-
-      const inputLength = this.selectors.input.value.length;
-
-      this.selectors.input.focus();
-      this.selectors.input.setSelectionRange(inputLength, inputLength);
-
-      addVisibility(this.selectors.buttonContainer);
     } else {
       addVisibility(this.selectors.title);
       addVisibility(this.selectors.showTaskFieldButton);

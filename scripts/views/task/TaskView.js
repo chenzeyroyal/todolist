@@ -3,6 +3,8 @@ import {
   slide,
   show,
   unShow,
+  setButtonToActive,
+  removeVisibility,
 } from "../../utils/dom.js";
 import { TaskEventHandler } from "./TaskEventHandler.js";
 
@@ -14,6 +16,11 @@ export default class TaskView {
     this.animationTime = 200;
     this.controller = controller;
 
+    this.classes = {
+      completed: "--completed",
+      hide: "--hidden",
+    };
+
     this.selectors = {
       text: this.el.querySelector("[data-js-taskTextContainer]"),
       radio: this.el.querySelector("[data-js-todoRadio]"),
@@ -23,14 +30,18 @@ export default class TaskView {
       deleteButton: this.el.querySelector("[data-js-deleteTaskButton]"),
     };
 
-    this.eventHandler = new TaskEventHandler(
-      this.task,
-      this.selectors,
-      this.taskView,
-      this.sectionView,
-      this.controller
-    );
-    this.eventHandler.init();
+    this.eventHandler = new TaskEventHandler({
+      complete: this.onCompleteTask.bind(this),
+      // showTaskSelect: this.onShowTaskSelect.bind(this),
+      edit: this.onEdit.bind(this),
+      delete: this.onDelete.bind(this),
+    });
+    this.eventHandler.bindCompleteRadio(this.selectors.radio);
+    this.eventHandler.bindEditButton(this.selectors.editButton);
+    this.eventHandler.bindDeleteButton(this.selectors.deleteButton);
+    // this.eventHandler.bindShowTaskSelectButton(this.selectors.selectButton);
+    this.test();
+    this.load();
   }
 
   render(task, templateSelector) {
@@ -40,6 +51,65 @@ export default class TaskView {
     li.dataset.id = task.id;
     li.querySelector("[data-js-taskTextContainer]").textContent = task.text;
     return li;
+  }
+
+  load() {
+    if (this.task.isActive) {
+      this.el.classList.remove(this.classes.completed);
+      this.selectors.radio.checked = false;
+    } else {
+      this.el.classList.add(this.classes.completed);
+      this.selectors.radio.checked = true;
+    }
+  }
+
+  // onShowTaskSelect() {
+  //   handleSelects(this.selectors.selectButton, this.selectors.select);
+  // }
+
+  test() {
+    document.addEventListener("click", (e) => {
+      if (this.selectors.selectButton.contains(e.target)) {
+        this.selectors.select.classList.toggle("--hidden");
+      } else {
+        removeVisibility(this.selectors.select);
+      }
+    });
+  }
+
+  onCompleteTask() {
+    if (this.selectors.radio.checked) {
+      this.el.classList.add(this.classes.completed);
+      this.task.isActive = false;
+      setTimeout(() => {
+        this.sectionView.clearTaskInputView();
+        this.controller.sortTasks(this.sectionView.section.id, "status");
+      }, 1000);
+
+      this.controller.saveToLocalStorage();
+    } else {
+      this.el.classList.remove(this.classes.completed);
+      this.task.isActive = true;
+      this.controller.saveToLocalStorage();
+    }
+  }
+
+  onEdit() {
+    this.controller.showTaskEditingInput(
+      this.sectionView.section.id,
+      this.task.id
+    );
+
+    setButtonToActive(this.sectionView.taskInputView?.submitButton);
+    this.controller.saveToLocalStorage();
+
+    handleSelects(this.selectors.selectButton, this.selectors.select);
+  }
+
+  onDelete() {
+    this.sectionView.clearTaskInputView();
+    this.controller.removeTask(this.task.id, this.sectionView.section.id);
+    this.controller.saveToLocalStorage();
   }
 
   update(text, priority) {

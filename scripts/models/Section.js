@@ -13,7 +13,7 @@ export default class Section {
     return task;
   }
 
-  getSortedTasks(criterion = "priority") {
+  getSortedTasks(criterion = "status") {
     return [...this.tasks].sort((a, b) => {
       switch (criterion) {
         case "priority":

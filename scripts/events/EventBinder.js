@@ -1,4 +1,4 @@
-import { $, handleSelects } from "../utils/dom.js";
+import { $ } from "../utils/dom.js";
 
 export default class EventBinder {
   constructor(controller) {
@@ -33,7 +33,5 @@ export default class EventBinder {
 
       localStorage.setItem("theme", newTheme);
     });
-
-    handleSelects(this.sortButton, this.sortSelect);
   }
 }

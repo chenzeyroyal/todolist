@@ -8,6 +8,12 @@ const classes = {
   slide: "--slide",
   show: "--show",
   inactive: "--inactive",
+  topReached: "--top-reached",
+  bottomReached: "--bottom-reached",
+};
+const selectors = {
+  customSelect: "[data-js-customSelect]",
+  customSelectButton: "[data-js-customSelectButton]",
 };
 
 export function createElementFromTemplate(templateSelector) {
@@ -35,12 +41,29 @@ export function unShow(element) {
   setTimeout(() => element.classList.remove(classes.show));
 }
 
+export function addTopBorder(element) {
+  element.classList.add(classes.topReached);
+  setTimeout(() => {
+    element.classList.remove(classes.topReached);
+  }, 500);
+  element.classList.remove(classes.bottomReached);
+}
+
+export function addBotBorder(element) {
+  element.classList.add(classes.bottomReached);
+  setTimeout(() => {
+    element.classList.remove(classes.bottomReached);
+  }, 500);
+  element.classList.remove(classes.topReached);
+}
+
 export function displayModal(modal) {
   modal.classList.add(classes.show);
   setTimeout(() => {
     modal.classList.remove(classes.show);
   }, 3000);
 }
+
 export function setButtonToActive(button) {
   button.classList.remove(classes.inactive);
 }
@@ -48,12 +71,15 @@ export function setButtonToInactive(button) {
   button.classList.add(classes.inactive);
 }
 
-export function handleSelects(button, select) {
+export function onCloseOtherSelects() {
   document.addEventListener("click", (e) => {
-    if (button.contains(e.target)) {
-      select.classList.toggle("--hidden");
-    } else {
-      removeVisibility(select);
+    const isClickInsideSelect = e.target.closest(selectors.customSelect);
+    const isClickInsideButton = e.target.closest(selectors.customSelectButton);
+
+    if (!isClickInsideSelect && !isClickInsideButton) {
+      document
+        .querySelectorAll(selectors.customSelect)
+        .forEach((select) => select.classList.add(classes.hide));
     }
   });
 }

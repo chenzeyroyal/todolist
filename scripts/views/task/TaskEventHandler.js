@@ -1,67 +1,27 @@
-import { handleSelects, setButtonToActive } from "../../utils/dom.js";
 export class TaskEventHandler {
-  constructor(task, selectors, taskView, sectionView, controller) {
-    this.taskView = taskView;
-    this.sectionView = sectionView;
-    this.task = task;
-    this.selectors = selectors;
-    this.controller = controller;
-
-    this.classes = {
-      completed: "--completed",
-    };
+  constructor(handlers) {
+    this.handlers = handlers;
   }
 
-  init() {
-    this.onCompleteTask();
-    this.onEdit();
-    this.onDelete();
+  bindCompleteRadio(radio) {
+    radio.addEventListener("change", () => this.handlers.complete());
   }
 
-  onCompleteTask() {
-    this.selectors.radio.addEventListener("change", () => {
-      if (this.selectors.radio.checked) {
-        this.taskView.classList.add(this.classes.completed);
-        this.task.isActive = false;
+  // bindShowTaskSelectButton(button) {
+  //   button.addEventListener("click", () => {
+  //     this.handlers.showTaskSelect();
+  //   });
+  // }
 
-        setTimeout(() => {
-          this.sectionView.clearTaskInputView();
-          this.controller.sortTasks(this.sectionView.section.id, "status");
-        }, 1000);
-
-        this.controller.saveToLocalStorage();
-      } else {
-        this.taskView.classList.remove(this.classes.completed);
-        this.task.isActive = true;
-        this.controller.showTaskEditingInput(
-          this.sectionView.section.id,
-          this.task.id
-        );
-      }
-    });
-  }
-
-  onEdit() {
-    this.selectors.editButton.addEventListener("click", (e) => {
+  bindEditButton(button) {
+    button.addEventListener("click", (e) => {
       if (e.target.closest("label")) return;
-      this.controller.showTaskEditingInput(
-        this.sectionView.section.id,
-        this.task.id
-      );
-      setButtonToActive(this.sectionView.taskInputView?.submitButton);
-      this.controller.saveToLocalStorage();
-    });
 
-    handleSelects(this.selectors.selectButton, this.selectors.select);
+      this.handlers.edit();
+    });
   }
 
-  onDelete() {
-    if (this.selectors.deleteButton) {
-      this.selectors.deleteButton.addEventListener("click", () => {
-        this.sectionView.clearTaskInputView();
-        this.controller.removeTask(this.task.id, this.sectionView.section.id);
-        this.controller.saveToLocalStorage();
-      });
-    }
+  bindDeleteButton(button) {
+    button.addEventListener("click", () => this.handlers.delete());
   }
 }

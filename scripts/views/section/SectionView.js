@@ -2,10 +2,12 @@ import {
   createElementFromTemplate,
   addVisibility,
   removeVisibility,
+  addTopBorder,
+  addBotBorder,
 } from "../../utils/dom.js";
 import SectionTitleEditor from "./SectionTitleEditor.js";
 import SectionVisibilityController from "./SectionVisibilityController.js";
-import { SectionEventHandler } from "./SectionEventHandler.js";
+import SectionEventHandler from "./SectionEventHandler.js";
 
 export default class SectionView {
   constructor(section, templateSelector, controller) {
@@ -15,24 +17,22 @@ export default class SectionView {
     this.taskInputView = null;
     this.isEditing = false;
 
-    this.currentSort = "date";
-
     this.selectors = {
       titleContainer: this.el.querySelector("[data-js-sectionTitleContainer]"),
       title: this.el.querySelector("[data-js-sectionTitleText]"),
       input: this.el.querySelector("[data-js-sectionTitleInput]"),
-      buttonContainer: this.el.querySelector(
-        "[data-js-sectionTitleButtonContainer]"
-      ),
+
+      buttonContainer: this.el.querySelector("[data-js-sectionTitleButtons]"),
       submitButton: this.el.querySelector("[data-js-submitSectionButton]"),
       cancelButton: this.el.querySelector("[data-js-cancelSectionButton]"),
-      showTaskFieldButton: this.el.querySelector(
-        "[data-js-showTaskInputButton]"
-      ),
 
       taskInputField: this.el.querySelector("[data-js-taskInputField]"),
+      showTaskFieldButton: this.el.querySelector("[data-js-showTaskInputBtn]"),
+
       taskList: this.el.querySelector("[data-js-todoList]"),
+
       deleteButton: this.el.querySelector("[data-js-deleteSectionButton]"),
+
       sortSelect: document.querySelector("[data-js-sortSelect]"),
     };
 
@@ -41,38 +41,97 @@ export default class SectionView {
       this.selectors,
       this.isEditing
     );
-    this.eventHandler = new SectionEventHandler(
-      this.section,
-      this.selectors,
-      this.titleEditor,
-      this.visibilityController,
-      this.controller
+
+    this.eventHandler = new SectionEventHandler({
+      submit: this.onSubmit.bind(this),
+      cancel: this.onCancel.bind(this),
+      edit: this.onEdit.bind(this),
+      showTaskInput: this.onShowTaskField.bind(this),
+      scroll: this.onScroll.bind(this),
+      sort: this.onSortTasks.bind(this),
+      delete: this.onDelete.bind(this),
+    });
+
+    this.eventHandler.bindSubmitButton(this.selectors.submitButton);
+    this.eventHandler.bindSubmitKey("Enter");
+    this.eventHandler.bindCancelButton(this.selectors.cancelButton);
+    this.eventHandler.bindСancelKey("Escape");
+    this.eventHandler.bindEditTitle(this.selectors.titleContainer);
+    this.eventHandler.bindShowTaskInputButton(
+      this.selectors.showTaskFieldButton
     );
-    this.eventHandler.init();
-
-    this.load();
-  }
-
-  load() {
-    if (!this.isEditing) {
-      addVisibility(this.selectors.showTaskFieldButton);
-    }
+    this.eventHandler.bindScrollList(this.selectors.taskList);
+    this.eventHandler.bindSortSelect(this.selectors.sortSelect);
+    this.eventHandler.bindDeleteButton(this.selectors.deleteButton);
   }
 
   setEditingState(isEditing) {
     this.isEditing = isEditing;
+
     this.visibilityController.handleEditingView(isEditing);
   }
 
   render(section, templateSelector) {
     const sectionEl = document.createElement("div");
-    sectionEl.classList.add("todo__sections-column");
+    sectionEl.classList.add("todo__section");
     sectionEl.dataset.id = section.id;
 
     const fragment = createElementFromTemplate(templateSelector);
     sectionEl.append(fragment);
 
     return sectionEl;
+  }
+
+  onSubmit() {
+    if (this.selectors.input.value.trim() === "") return;
+    this.titleEditor.saveTitle();
+    this.visibilityController.handleEditingView();
+    this.controller.saveToLocalStorage();
+    this.cancelEditing();
+  }
+
+  onCancel() {
+    if (this.section.title === "") {
+      this.controller.removeSection(this.section.id);
+    }
+    this.visibilityController.handleEditingView(false);
+    this.cancelEditing();
+  }
+
+  onEdit() {
+    this.visibilityController.handleEditingView(true);
+  }
+
+  onShowTaskField() {
+    this.controller.showTaskInput(this.section.id);
+  }
+
+  onScroll() {
+    const { scrollTop, scrollHeight, clientHeight } = this.selectors.taskList;
+    const isScrolable = scrollHeight > clientHeight;
+
+    if (scrollTop === 0 && isScrolable) {
+      addTopBorder(this.selectors.taskList);
+    }
+
+    if (scrollTop + clientHeight >= scrollHeight - 1 && isScrolable) {
+      addBotBorder(this.selectors.taskList);
+    }
+  }
+
+  onSortTasks(target) {
+    const input = target.closest("input");
+    const value = input.value;
+    if (value) {
+      this.controller.sortTasks(this.section.id, value);
+    }
+  }
+
+  onDelete() {
+    if (this.selectors.deleteButton) {
+      this.controller.removeSection(this.section.id);
+      this.controller.saveToLocalStorage();
+    }
   }
 
   cancelEditing() {

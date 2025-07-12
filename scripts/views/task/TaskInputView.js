@@ -1,7 +1,6 @@
 import {
   createElementFromTemplate,
   removeVisibility,
-  handleSelects,
   setButtonToActive,
   setButtonToInactive,
 } from "../../utils/dom.js";
@@ -82,8 +81,6 @@ export default class TaskInputView {
   }
 
   onSelectPriority(callback) {
-    handleSelects(this.priorityButton, this.priorityList);
-
     this.priorityList.addEventListener("click", (e) => {
       const label = e.target.closest("LABEL");
       if (!label) return;
