@@ -1,9 +1,10 @@
+import { createElementFromTemplate } from "../../utils/dom.js";
 import {
-  createElementFromTemplate,
   removeVisibility,
   setButtonToActive,
   setButtonToInactive,
-} from "../../utils/dom.js";
+  toggleSelectVisibility,
+} from "../../utils/ui.js";
 
 export default class TaskInputView {
   classes = {
@@ -13,8 +14,8 @@ export default class TaskInputView {
 
   constructor(templateSelector) {
     this.el = this.render(templateSelector);
-
     this.isActive = false;
+
     this.input = this.el.querySelector("[data-js-taskInput]");
     this.submitButton = this.el.querySelector("[data-js-submitTaskButton]");
     this.cancelButton = this.el.querySelector("[data-js-cancelTaskButton]");
@@ -25,6 +26,7 @@ export default class TaskInputView {
       if (e.target.closest("[data-js-sectiontitlecontainer]")) this.remove();
     });
 
+    toggleSelectVisibility(this.priorityButton, this.priorityList);
     this.checkInput();
   }
 

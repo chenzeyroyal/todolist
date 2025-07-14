@@ -1,12 +1,14 @@
+import { createElementFromTemplate } from "../../utils/dom.js";
+
 import {
-  createElementFromTemplate,
   slide,
   show,
   unShow,
   setButtonToActive,
-  removeVisibility,
-} from "../../utils/dom.js";
-import { TaskEventHandler } from "./TaskEventHandler.js";
+  toggleSelectVisibility,
+} from "../../utils/ui.js";
+
+import { TaskEventHandler } from "../../events/TaskEventHandler.js";
 
 export default class TaskView {
   constructor(task, templateSelector, controller, sectionView) {
@@ -32,15 +34,14 @@ export default class TaskView {
 
     this.eventHandler = new TaskEventHandler({
       complete: this.onCompleteTask.bind(this),
-      // showTaskSelect: this.onShowTaskSelect.bind(this),
       edit: this.onEdit.bind(this),
       delete: this.onDelete.bind(this),
     });
     this.eventHandler.bindCompleteRadio(this.selectors.radio);
     this.eventHandler.bindEditButton(this.selectors.editButton);
     this.eventHandler.bindDeleteButton(this.selectors.deleteButton);
-    // this.eventHandler.bindShowTaskSelectButton(this.selectors.selectButton);
-    this.test();
+
+    toggleSelectVisibility(this.selectors.selectButton, this.selectors.select);
     this.load();
   }
 
@@ -61,20 +62,6 @@ export default class TaskView {
       this.el.classList.add(this.classes.completed);
       this.selectors.radio.checked = true;
     }
-  }
-
-  // onShowTaskSelect() {
-  //   handleSelects(this.selectors.selectButton, this.selectors.select);
-  // }
-
-  test() {
-    document.addEventListener("click", (e) => {
-      if (this.selectors.selectButton.contains(e.target)) {
-        this.selectors.select.classList.toggle("--hidden");
-      } else {
-        removeVisibility(this.selectors.select);
-      }
-    });
   }
 
   onCompleteTask() {
@@ -102,8 +89,6 @@ export default class TaskView {
 
     setButtonToActive(this.sectionView.taskInputView?.submitButton);
     this.controller.saveToLocalStorage();
-
-    handleSelects(this.selectors.selectButton, this.selectors.select);
   }
 
   onDelete() {

@@ -1,4 +1,4 @@
-import { addVisibility, removeVisibility } from "../../utils/dom.js";
+import { addVisibility, removeVisibility } from "../../utils/ui.js";
 
 export default class SectionVisibilityController {
   constructor(selectors, isEditing) {

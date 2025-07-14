@@ -10,7 +10,7 @@
     <nav class="sidebar --closed" data-js-sidebar>
       <div class="sidebar__main">
         <header class="sidebar__header">
-          <button class="sidebar__toggle-button button" data-js-sidebarToggle>
+          <button class="sidebar__toggle-button button" data-js-sidebarButton>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -26,7 +26,10 @@
               <path d="M9 3v18" />
             </svg>
           </button>
-          <h1>Todolist</h1>
+          <div class="sidebar__header-title">
+            <h1>Todolist</h1>
+            <p>by CHENZEYLAB</p>
+          </div>
         </header>
         <ul class="sidebar__links-list">
           <li class="sidebar__links-list-item">
@@ -122,6 +125,7 @@
           </li>
         </ul>
       </div>
+
       <div class="sidebar__theme">
         <button class="sidebar__theme-button" data-js-themeButton>
           <div class="sidebar__theme-button-sun-icon theme-icon">
@@ -268,7 +272,7 @@
                   maxlength="24"
                   data-js-sectionTitleInput
                 />
-                <h4 class="--hidden" data-js-sectionTitleText></h4>
+                <h3 class="--hidden" data-js-sectionTitleText></h3>
               </div>
               <button
                 class="todo__section-delete-button button"
@@ -338,9 +342,7 @@
             </div>
           </div>
 
-          <ul class="todo__list" data-js-todoList>
-            <!-- <div class="todo__list-border" data-js-todoListBorder></div> -->
-          </ul>
+          <ul class="todo__list" data-js-todoList></ul>
 
           <button
             class="todo__list-add-button button --hidden"

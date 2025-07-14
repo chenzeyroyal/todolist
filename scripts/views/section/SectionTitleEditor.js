@@ -1,4 +1,4 @@
-import { setButtonToActive, setButtonToInactive } from "../../utils/dom.js";
+import { setButtonToActive, setButtonToInactive } from "../../utils/ui.js";
 
 export default class SectionTitleEditor {
   constructor(section, selectors) {

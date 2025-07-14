@@ -29,6 +29,8 @@ img {
 svg {
   width: var(--icon-width);
   height: var(--icon-height);
+  user-select: none;
+  pointer-events: none;
 }
 
 html {
@@ -268,6 +270,11 @@ main {
   overflow: hidden;
   box-shadow: 0 0.1rem 0.25rem rgba(0, 0, 0, 0.3);
 }
+.sidebar svg {
+  flex-shrink: 0;
+  flex-grow: 0;
+  stroke: var(--color-dark-02);
+}
 .sidebar__main {
   display: flex;
   flex-direction: column;
@@ -280,7 +287,15 @@ main {
   gap: 1rem;
   color: var(--color-dark);
 }
-.sidebar__links-list .icon-wrapper {
+.sidebar__header-title {
+  width: 100%;
+  white-space: nowrap;
+}
+.sidebar__header-title p {
+  margin: 0;
+  font-size: 14px;
+}
+.sidebar .icon-wrapper {
   border-radius: var(--border-radius);
   background-color: transparent;
   color: var(--color-dark-02);
@@ -303,10 +318,6 @@ main {
 }
 .sidebar__links-list-item a:hover {
   text-decoration: underline;
-}
-.sidebar__links-list-item svg {
-  flex-shrink: 0;
-  stroke: var(--color-dark-02);
 }
 
 .sidebar__theme-button {
@@ -405,7 +416,7 @@ input[type="text"] {
 .input-wrapper:has(input:focus) {
   border: 0.09375rem solid var(--color-dark-02);
 }
-.todo__section-title-text h4 {
+.todo__section-title-text h3 {
   position: relative;
   min-height: 2rem;
   margin: 0;
@@ -681,11 +692,11 @@ input[type="text"] {
     --section-width: 250px;
   }
 }
-@media (max-width: 48rem) {
+/* @media (max-width: 48rem) {
   .sidebar__theme {
     margin-top: 21.875rem;
   }
-}
+} */
 @media (hover: hover) {
   .button:not(.--inactive):hover {
     background-color: var(--color-dark-03);

@@ -2,12 +2,8 @@ import Section from "../models/Section.js";
 import SectionView from "../views/section/SectionView.js";
 import TaskView from "../views/task/TaskView.js";
 import TaskInputView from "../views/task/TaskInputView.js";
-import {
-  $,
-  displayModal,
-  onToggleSelect,
-  onCloseOtherSelects,
-} from "../utils/dom.js";
+import { $ } from "../utils/dom.js";
+import { displayModal, onCloseAllSelects } from "../utils/ui.js";
 
 export default class TodoController {
   constructor() {
@@ -17,6 +13,8 @@ export default class TodoController {
 
     this.maxSections = 5;
     this.maxTasks = 15;
+
+    this.defaultPriority = "3";
 
     this.selectors = {
       container: $("[data-js-todoSections]"),
@@ -29,15 +27,8 @@ export default class TodoController {
       maxTasksModal: $("[data-js-maxTasksModal]"),
     };
     this.loadFromLocalStorage();
-    this.loadTheme();
-    onToggleSelect();
-    onCloseOtherSelects();
-  }
 
-  loadTheme() {
-    const theme = localStorage.getItem("theme");
-    if (!theme) return;
-    document.documentElement.setAttribute("theme", theme);
+    onCloseAllSelects();
   }
 
   loadFromLocalStorage() {
@@ -71,11 +62,15 @@ export default class TodoController {
         );
 
         section.tasks.forEach((task) => {
-          this.renderTask(task, section.id, task.priority);
+          this.renderTask(task, task.priority, section.id);
         });
 
         this.sortTasks(sectionData.id, "status");
       });
+
+      const theme = localStorage.getItem("theme");
+      if (!theme) return;
+      document.documentElement.setAttribute("theme", theme);
     }
   }
 
@@ -134,7 +129,20 @@ export default class TodoController {
     );
   }
 
-  renderTask(task, sectionId, priority) {
+  removeSection(sectionId) {
+    const section = this.sections.find((s) => s.id === sectionId);
+    this.sections = this.sections.filter((s) => s.id !== sectionId);
+
+    if (!section) return;
+
+    const view = this.sectionViews.get(sectionId);
+    if (view) {
+      view.remove();
+      this.sectionViews.delete(sectionId);
+    }
+  }
+
+  renderTask(task, priority, sectionId) {
     const sectionView = this.sectionViews.get(sectionId);
 
     if (!sectionView) return;
@@ -172,7 +180,7 @@ export default class TodoController {
     taskInputField.appendTo(sectionView.el);
     taskInputField.focus();
 
-    let priority = "3";
+    let priority = this.defaultPriority;
 
     taskInputField.onSelectPriority((value) => (priority = value));
 
@@ -181,12 +189,16 @@ export default class TodoController {
       if (!section) return;
 
       const task = section.addTask(text, priority);
-      this.renderTask(task, sectionId, priority, taskInputField);
+
+      this.renderTask(task, task.priority, sectionId);
+
       sectionView.clearTaskInputView();
       this.sortTasks(sectionId, "status");
     });
 
-    taskInputField.onCancel(() => sectionView.clearTaskInputView());
+    taskInputField.onCancel(() => {
+      sectionView.clearTaskInputView();
+    });
   }
 
   showTaskEditingInput(sectionId, taskId) {
@@ -215,9 +227,7 @@ export default class TodoController {
 
     let priority = task.priority;
 
-    taskInputField.onSelectPriority((value) => {
-      priority = value;
-    });
+    taskInputField.onSelectPriority((value) => (priority = value));
 
     taskInputField.onSubmit((text) => {
       task.text = text;
@@ -232,19 +242,6 @@ export default class TodoController {
       sectionView.clearTaskInputView();
       this.saveToLocalStorage();
     });
-  }
-
-  removeSection(sectionId) {
-    const section = this.sections.find((s) => s.id === sectionId);
-    this.sections = this.sections.filter((s) => s.id !== sectionId);
-
-    if (!section) return;
-
-    const view = this.sectionViews.get(sectionId);
-    if (view) {
-      view.remove();
-      this.sectionViews.delete(sectionId);
-    }
   }
 
   removeTask(taskId, sectionId) {

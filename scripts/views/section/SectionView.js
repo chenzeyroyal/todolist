@@ -1,13 +1,13 @@
+import { createElementFromTemplate } from "../../utils/dom.js";
 import {
-  createElementFromTemplate,
   addVisibility,
   removeVisibility,
   addTopBorder,
   addBotBorder,
-} from "../../utils/dom.js";
+} from "../../utils/ui.js";
 import SectionTitleEditor from "./SectionTitleEditor.js";
 import SectionVisibilityController from "./SectionVisibilityController.js";
-import SectionEventHandler from "./SectionEventHandler.js";
+import SectionEventHandler from "../../events/SectionEventHandler.js";
 
 export default class SectionView {
   constructor(section, templateSelector, controller) {
@@ -160,6 +160,7 @@ export default class SectionView {
   addTaskView(view) {
     this.selectors.taskList.appendChild(view.el);
     this.selectors.taskList.scrollTop = this.selectors.taskList.scrollHeight;
+    document.documentElement.scrollLeft = 0;
   }
 
   remove() {
